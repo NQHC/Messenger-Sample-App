@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { BrowserRouter, Route, Routes} from "react-router-dom"
 import './App.css';
+import './Styles.css';
 import io  from "socket.io-client";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
@@ -57,14 +58,14 @@ function Chat() {
       <div className = "replies">
           <p>Response : {response}</p>
       </div>
+      <button className ="Button" onClick = {goHome}>Home</button>
       </header>
-      <div>
-        <Button onClick = {goHome}>Home</Button>
-        </div>
+       
     </div>
     
   );
 }
+/**
 const Button = styled.a`
  display: inline-block;
   border-radius: 8px;
@@ -76,4 +77,5 @@ const Button = styled.a`
   border: 2px solid white;
   cursor : pointer;
 `;
+ */
 export default Chat;

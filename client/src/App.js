@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { BrowserRouter, Route, Routes} from "react-router-dom"
 import Chat from "../src/pages/Chat";
 import Home from "../src/pages/Home";
-
+import Login from "../src/pages/Login";
 
 
 function App() {
@@ -11,6 +11,7 @@ return(
   <Routes>
     <Route path='/chat' element={ <Chat /> }/>
     <Route path='/' element={ <Home /> }/>
+    <Route path='/login' element={ <Login /> }/>
   </Routes>
   </BrowserRouter>
 )

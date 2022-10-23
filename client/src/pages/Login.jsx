@@ -23,8 +23,11 @@ return(
        
      <button className="Button" onClick = {goChat}>Sign In
      </button>
-     <div className = "link">
+     <div className = "link" onClick = {goChat}>
         Create Account
+        </div>
+        <div className = "link">
+        Forgot Password?
         </div>
      </div>
    </div>

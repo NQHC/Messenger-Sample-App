@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { BrowserRouter, Route, Routes} from "react-router-dom"
-import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import './Styles.css';
+import '../components/tags.jsx';
+import '../components/sidebar.jsx';
 
+import Tag from '../components/tags.jsx';
+import SideBar from '../components/sidebar.jsx';
 function Home() {
 const navigate = useNavigate();
 
@@ -17,54 +19,39 @@ const goChat = (n) => {
   }
 }
 return (
-    <div className = "Page">
+  
+ 
+      <div className = "Page">
+      <SideBar/>
         <div className="container">  
-        <div className = "center-screen"> 
+         
         <button className="Button" onClick = {goChat}>Chat</button>
         <button className="Button" onClick = {() => goChat(1)}>Login</button>
+        <input type="image" className = "imgBut" src="shuffle.png" name="saveForm" onClick={goChat} alt="Button" />
+        
+        <div style={{position:'absolute',top:'400px'}}>
+        <div className='tagBox'>
+        <Tag TagName="Random Tag"/>
+        <Tag TagName="test"/>
+        <Tag TagName="sample"/>
+        <Tag TagName="Hobbies"/>
+        <Tag TagName="Red"/>
+        <Tag TagName="Blue"/>
+        <Tag TagName="Animals"/>
+        <Tag TagName="Rock Climbing"/>
+        <Tag TagName="swimming"/>
+        <Tag TagName="erie"/>
         </div>
+        </div>
+      
+      <img src ="bunny.png" className = "bunny" alt = "a cute bunny"/>
         </div>
        
     </div>
       )
 }
 
-/**
-const Page = styled.div`
-  height: 115vh;
-  width: 100vw;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 1rem;
-  align-items: center;
-  background-color: #332D2D;
-  .container {
-    height: 85vh;
-    width: 85vw;
-    background-color: #65463E;
-  }
-  .center-screen {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  min-height: 100vh;
-}
-`;
-
-const Button = styled.a`
-  text-align: center;
-  display: inline-block;
-  border-radius: 8px;
-  padding: 0.5rem 0;
-  margin: 0.5rem 1rem;
-  width: 10rem;
-  background: #32926F;
-  color: white;
-  border: 2px solid white;
-  cursor : pointer;
-`;
- */
-
 export default Home;
+// <input type="checkbox" id="tags" className="invisibleCheck"  />
+//<label for="tags" className = "tag">Tag</label>
+//<div style={{position:'absolute',top:'400px'}}></div>

@@ -3,8 +3,9 @@ import { BrowserRouter, Route, Routes} from "react-router-dom"
 import './App.css';
 import './Styles.css';
 import io  from "socket.io-client";
-import styled from "styled-components";
+import '../components/sidebar.jsx';
 import { useNavigate } from "react-router-dom";
+import SideBar from '../components/sidebar.jsx';
 
 const room = "socket.id";
 const socket = io.connect("http://localhost:8080");
@@ -36,6 +37,7 @@ function Chat() {
 
   return (
     <div className="App">
+       <SideBar/>
       <header className="App-header">
         <p>
           Simple Message App

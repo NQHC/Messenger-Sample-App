@@ -13,7 +13,7 @@
   }
 }
 
-.App-header {
+.Chat-header {
   background-color: #282c34;
   min-height: 100vh;
   display: flex;
@@ -36,12 +36,7 @@
     transform: rotate(360deg);
   }
 }
-.box > input {
-  border: 1px solid Gray;
-  padding-left: 4px;
-  padding-bottom: 6px;
-  padding-right: 4px;
-}
+
 .replies > {
 
 }

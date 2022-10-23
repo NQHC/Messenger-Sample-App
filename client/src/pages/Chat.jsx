@@ -4,8 +4,10 @@ import './App.css';
 import './Styles.css';
 import io  from "socket.io-client";
 import '../components/sidebar.jsx';
+import '../components/chatbar.jsx';
 import { useNavigate } from "react-router-dom";
 import SideBar from '../components/sidebar.jsx';
+import ChatBar from '../components/chatbar.jsx';
 
 const room = "socket.id";
 const socket = io.connect("http://localhost:8080");
@@ -19,7 +21,10 @@ function Chat() {
       navigate("/");
   }
 
-  const sendMessage = () => {
+  const sendMessage = event => {
+    setMessage('');
+    event.preventDefault();
+  
     console.log("Sending :" + message);
       socket.emit("send_message", {
         message,
@@ -36,35 +41,31 @@ function Chat() {
   }, []);
 
   return (
-    <div className="App">
+      <div>
        <SideBar/>
-      <header className="App-header">
+       <ChatBar/>
+      <div className="Chat-header">
         <p>
-          Simple Message App
+          Connected
         </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-        </a>
-       <div className="box">
+     
+      <form onSubmit={sendMessage}>
        <input
           type="text"
+          value={message}
           placeholder="Message..."
+          className = "input-container" style={{position:'absolute',bottom:'2%',left:'calc(120px + 5%)',width:'calc(90% - 132px)'}}
           onChange={(event) => setMessage(event.target.value)}
-          onKeyDown={(event) => event.key === "Enter" && sendMessage()}
+          
         />
-      </div>
+        <button className = "Button" type = "submit">Send</button>
+      </form>
       <div className = "replies">
           <p>Response : {response}</p>
       </div>
-      <button className ="Button" onClick = {goHome}>Home</button>
-      </header>
-       
-    </div>
-    
+       </div>
+
+       </div>
   );
 }
 /**

@@ -1,9 +1,21 @@
-const app = require("express")();
+
+
+const express = require("express");
+const app = express();
 const http = require("http").createServer(app);
 const { Server } = require("socket.io");
 const cors = require("cors");
+require("dotenv/config");
+const mongoose = require("mongoose");
 
 app.use(cors());
+app.use(express.urlencoded({extended : true}));
+app.use(express.json());
+
+const userRoute = require("./routes/users");
+const chatRoute = require("./routes/chatInstance");
+app.use("/users",userRoute);
+app.use("/chat",chatRoute);
 
 const io = new Server(http, {
   cors: {
@@ -11,11 +23,22 @@ const io = new Server(http, {
     methods: ["GET", "POST"],
   },
 });
+mongoose.connect(process.env.DATABASE_URL, {
+  serverSelectionTimeoutMS: 5000
+}).catch(err => console.log(err.reason));
 
-http.listen(8080, () => console.log("Server is running..."));
+ //   useNewUrlParser: true,
+    //useUnifiedTopology: true,
+    //useFindAndModify: false,
+    //useCreateIndex: true,
+ 
+
+
+
 
 app.get("/", (req, res) => {
   res.send("Socket.io");
+  
 });
 
 io.on("connection", (socket) => {
@@ -32,3 +55,4 @@ io.on("connection", (socket) => {
   
  
 });
+http.listen(8080, () => console.log("Server is running..."));

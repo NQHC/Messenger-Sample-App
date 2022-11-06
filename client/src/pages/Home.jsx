@@ -6,31 +6,31 @@ import '../components/sidebar.jsx';
 
 import Tag from '../components/tags.jsx';
 import SideBar from '../components/sidebar.jsx';
+import user from "../configuration/index.js";
 function Home() {
 const navigate = useNavigate();
 
 
 const goChat = (n) => {
-  if (n == 1){
-    navigate("/login");
-  }
-  else{
+    user.activechat = n;
     navigate("/chat");
-  }
+  
 }
+const goLogin = () => {
+  navigate("/login");
+}
+
 return (
   
  
       <div className = "Page">
-      <SideBar/>
+      <SideBar goChat = {goChat}/>
         <div className="container">  
-         
-        <button className="Button" onClick = {goChat}>Chat</button>
-        <button className="Button" onClick = {() => goChat(1)}>Login</button>
+        <button className="Button" onClick = {goLogin}>Login</button>
+     
         <input type="image" className = "imgBut" src="shuffle.png" name="saveForm" onClick={goChat} alt="Button" />
         
-        <div style={{position:'absolute',top:'400px'}}>
-        <div className='tagBox'>
+        <div className='tagBox' style={{top:'55%',position:"absolute"}}>
         <Tag TagName="Random Tag"/>
         <Tag TagName="test"/>
         <Tag TagName="sample"/>
@@ -41,7 +41,6 @@ return (
         <Tag TagName="Rock Climbing"/>
         <Tag TagName="swimming"/>
         <Tag TagName="erie"/>
-        </div>
         </div>
       
       <img src ="bunny.png" className = "bunny" alt = "a cute bunny"/>

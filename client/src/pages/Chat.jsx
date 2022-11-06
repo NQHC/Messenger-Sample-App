@@ -5,22 +5,45 @@ import './Styles.css';
 import io  from "socket.io-client";
 import '../components/sidebar.jsx';
 import '../components/chatbar.jsx';
-import { useNavigate } from "react-router-dom";
+import axios from 'axios';
 import SideBar from '../components/sidebar.jsx';
 import ChatBar from '../components/chatbar.jsx';
+import user from '../configuration';
+
+
+
+import { useNavigate } from "react-router-dom";
+import './Styles.css';
+
+import '../configuration/index';
+
 
 const room = "socket.id";
 const socket = io.connect("http://localhost:8080");
 function Chat() {
   const[message,setMessage] = useState("");
   const[response,setResponse] = useState("");
- 
+  const[chatId,setChat] = useState(user.activechat);
 
-  const navigate = useNavigate();
-  const goHome = () => {
-      navigate("/");
+
+  // Configuration sets header and parameters based on inputted parameters
+  const Config = (params) => {
+    let config = {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+    if (params) {
+      config = {
+        ...config,
+        params: {
+          ...params,
+        },
+      };
+    }
+    return config;
   }
-
+  
   const sendMessage = event => {
     setMessage('');
     event.preventDefault();
@@ -32,23 +55,44 @@ function Chat() {
       });
     
   };
+ 
+const checkMessages = () =>{
 
+  
+  axios
+  .get(`http://localhost:8080/chat/`, Config({ chatId }))
+  .then((res) => {
+    console.log(JSON.stringify(res.data));
+  })
+  .catch(function (error) {
+    console.log(error);
+  });
+  
+}
+const setMessages = ()=>{
+
+}
+  const changeChat = (chatId) => {
+    setChat(chatId);
+    user.activechat= chatId;
+  }
   useEffect(() => {
     socket.on("reply_message", ( message2 ) => {
       console.log("WORKING: " + message2);
       setResponse(message2);
     });
   }, []);
-
+  
   return (
       <div>
-       <SideBar/>
-       <ChatBar/>
+       <SideBar goChat = {changeChat}/>
+       <ChatBar chat = {chatId}/>
+  
       <div className="Chat-header">
         <p>
-          Connected
+          Connected {chatId}
         </p>
-     
+       
       <form onSubmit={sendMessage}>
        <input
           type="text"
@@ -60,25 +104,15 @@ function Chat() {
         />
         <button className = "Button" type = "submit">Send</button>
       </form>
+      <button className = "Button" onClick={checkMessages}>Check</button>
       <div className = "replies">
           <p>Response : {response}</p>
       </div>
        </div>
-
+       
+        
        </div>
   );
 }
-/**
-const Button = styled.a`
- display: inline-block;
-  border-radius: 8px;
-  padding: 0.5rem 0;
-  margin: 0.5rem 1rem;
-  width: 10rem;
-  background: #32926F;
-  color: white;
-  border: 2px solid white;
-  cursor : pointer;
-`;
- */
+
 export default Chat;

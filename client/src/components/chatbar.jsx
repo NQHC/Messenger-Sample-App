@@ -1,10 +1,10 @@
 
 import '../pages/Styles.css';
-
-export default function ChatBar(){
+import chatwindow from '../pages/Chat.jsx';
+export default function ChatBar ({chat}){
 
     return (
-        <div style = {Style}><div style = {{position: 'absolute', left:'35px',bottom:'30%'}}>Mr. Potato</div></div>
+        <div style = {Style}><div style = {{position: 'absolute', left:'35px',bottom:'30%'}}>{chat}</div></div>
     );
 
 }

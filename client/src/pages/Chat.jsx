@@ -24,7 +24,7 @@ function Chat() {
   const[message,setMessage] = useState("");
   const[response,setResponse] = useState("");
   const[chatId,setChat] = useState(user.activechat);
-
+  const [viewedMessages,setviewedMessages] = useState([]);
 
   // Configuration sets header and parameters based on inputted parameters
   const Config = (params) => {
@@ -44,35 +44,47 @@ function Chat() {
     return config;
   }
   
-  const sendMessage = event => {
-    setMessage('');
+const sendMessage = event => {
+   
     event.preventDefault();
-  
-    console.log("Sending :" + message);
+    const sentBy = user.id;
+    const body = {message,chatId,sentBy};
+   
+    axios.post("http://localhost:8080/chat/createMessage",body)
+    .then(res=>{
+        const{msg} = res.data;
+        console.log(msg);
+        checkMessages();
+    })
+    .catch((err)=>{
+        console.log(err.response.data.msg);
+    });
+    setMessage('');
+  /* console.log("Sending :" + message);
       socket.emit("send_message", {
         message,
          roomNumbers: room,
       });
-    
+    */
   };
  
 const checkMessages = () =>{
 
   
-  axios
-  .get(`http://localhost:8080/chat/`, Config({ chatId }))
+  axios.get(`http://localhost:8080/chat/`, Config({ chatId }))
   .then((res) => {
-    console.log(JSON.stringify(res.data));
+   var allMessages = res.data;
+    setviewedMessages(allMessages.messages);
+   console.log(viewedMessages[0].message);
+   //setMessages({allMessages})
   })
   .catch(function (error) {
     console.log(error);
   });
   
 }
-const setMessages = ()=>{
 
-}
-  const changeChat = (chatId) => {
+const changeChat = (chatId) => {
     setChat(chatId);
     user.activechat= chatId;
   }
@@ -87,7 +99,6 @@ const setMessages = ()=>{
       <div>
        <SideBar goChat = {changeChat}/>
        <ChatBar chat = {chatId}/>
-  
       <div className="Chat-header">
         <p>
           Connected {chatId}
@@ -108,9 +119,10 @@ const setMessages = ()=>{
       <div className = "replies">
           <p>Response : {response}</p>
       </div>
-       </div>
-       
-        
+      {viewedMessages.map((n)=> (
+        <div>{n.message}</div>
+      ))}
+       </div>     
        </div>
   );
 }

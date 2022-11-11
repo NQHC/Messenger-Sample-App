@@ -26,6 +26,7 @@ return (
       <div className = "Page">
       <SideBar goChat = {goChat}/>
         <div className="container">  
+        <h1>{user.id}</h1>
         <button className="Button" onClick = {goLogin}>Login</button>
      
         <input type="image" className = "imgBut" src="shuffle.png" name="saveForm" onClick={goChat} alt="Button" />

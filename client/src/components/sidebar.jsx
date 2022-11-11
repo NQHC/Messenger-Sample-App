@@ -20,7 +20,7 @@ export default function SideBar({goChat}){
     }
     return (
         <div className ="SideBar" >
-            
+      
         <button className ="Button" style = {{width: '5.5rem'}} onClick={goHome}>Home</button>
         {user.chats.map(i => <div key={i}>
         

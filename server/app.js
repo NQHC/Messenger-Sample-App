@@ -14,8 +14,12 @@ app.use(express.json());
 
 const userRoute = require("./routes/users");
 const chatRoute = require("./routes/chatInstance");
+const queueRoute = require("./routes/queue");
+
+app.use("/queue",queueRoute);
 app.use("/users",userRoute);
 app.use("/chat",chatRoute);
+
 
 const io = new Server(http, {
   cors: {

@@ -5,6 +5,8 @@ import './Styles.css';
 import axios from 'axios';
 import '../configuration/index';
 import user from '../configuration/index';
+import { StyleSheet, Button, View, SafeAreaView, Text, Alert } from 'react-native';
+
 
 function Login() {
 const navigate = useNavigate();

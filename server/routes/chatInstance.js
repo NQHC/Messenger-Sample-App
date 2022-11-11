@@ -10,33 +10,30 @@ const User = require("../schema/User");
 
 router.get("/", (req, res) => {
     const  {chatId,total} = req.query; // chat id and total from query
-
-
     if (!chatId){ // if chat id was not sent 
         return res.status(400).json({ msg: "Did not send chat Id" });}
    
-    Chat.find({ _id: chatId }, (err, thisChat) => {
+      Chat.findById(chatId,(err,thisChat) => {
       if (err){
         return res.status(400).json({ msg: "No chat instance found" });}
-          
+        
         if (!total){ // if new request set total messages to chat room's total
         currM = thisChat.total_messages;
         }
         else {
             currM = total;
         }
-        const quantity = 10;
+        const quantity = 10;   
          Message.find({ // get last 10 messages
             chatId, 
-            currM: 
-                { $lt: currM , $gte: currM + quantity} // return 10 messages
+            message_number: 
+                { $lt: currM , $gte: currM-quantity} // return 10 messages
         }, (err, theseM)=>{
             if (err){
                 return res.status(400).json({ msg: "Start a conversation" });}
             var messages = {};
-            theseM.map(function(oneMess){
-                messages[oneMess.message] = oneMess;
-            });
+            messages = theseM.map((n=>n));
+           
             res.status(200).json({ messages });
         })
        
@@ -45,10 +42,12 @@ router.get("/", (req, res) => {
 
 router.post("/createMessage",(req,res)=>{
     const{message,chatId,sentBy} = req.body;
-   
+    console.log(req.body);
     Chat.findById(chatId,(err,thisChat) => {
         if (err){
           return res.status(400).json({ msg: "No chat instance found" });}
+        console.log(thisChat);
+        console.log(thisChat.total_messages);
         total = thisChat.total_messages+1;
        
         const newMessage = new Message({

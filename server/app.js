@@ -31,17 +31,14 @@ mongoose.connect(process.env.DATABASE_URL, {
   serverSelectionTimeoutMS: 5000
 }).catch(err => console.log(err.reason));
 
- //   useNewUrlParser: true,
-    //useUnifiedTopology: true,
-    //useFindAndModify: false,
-    //useCreateIndex: true,
+ 
  
 
 
 
 
 app.get("/", (req, res) => {
-  res.send("Socket.io");
+  res.send("Server Response");
   
 });
 

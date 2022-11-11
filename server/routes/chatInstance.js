@@ -27,7 +27,7 @@ router.get("/", (req, res) => {
          Message.find({ // get last 10 messages
             chatId, 
             message_number: 
-                { $lt: currM , $gte: currM-quantity} // return 10 messages
+                { $lte: currM , $gt: currM-quantity} // return 10 messages
         }, (err, theseM)=>{
             if (err){
                 return res.status(400).json({ msg: "Start a conversation" });}

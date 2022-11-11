@@ -21,11 +21,17 @@ import '../configuration/index';
 const room = "socket.id";
 const socket = io.connect("http://localhost:8080");
 function Chat() {
+  const navigate = useNavigate();
   const[message,setMessage] = useState("");
   const[response,setResponse] = useState("");
   const[chatId,setChat] = useState(user.activechat);
   const [viewedMessages,setviewedMessages] = useState([]);
 
+  useEffect(()=>{
+    if (user.id == ""){
+      navigate("/login");
+    }
+  });  
   // Configuration sets header and parameters based on inputted parameters
   const Config = (params) => {
     let config = {

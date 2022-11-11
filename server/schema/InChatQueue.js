@@ -4,7 +4,7 @@ const InQueue = mongoose.Schema({
   user:  {type: mongoose.Schema.ObjectId, ref :"User"},
   tags: {
     type: Array,
-    default: [""],
+    default: [String],
   },
   reqtags: {
     type:Boolean,

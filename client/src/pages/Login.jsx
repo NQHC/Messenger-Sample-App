@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { BrowserRouter, Route, Routes} from "react-router-dom"
+
 import { useNavigate } from "react-router-dom";
 import './Styles.css';
 import axios from 'axios';
 import '../configuration/index';
 import user from '../configuration/index';
-import { StyleSheet, Button, View, SafeAreaView, Text, Alert } from 'react-native';
 
 
 function Login() {
@@ -104,10 +103,7 @@ return(
         placeholder = "Email" value = {email} onChange={(e) => setEmail(e.target.value)}  />
     <input className = "input-container" type="text" 
         placeholder = "Phone Number" value = {phone} onChange={(e) => setPhone(e.target.value)}/>
-     <input className = "input-container" type="text"
-        placeholder = "First Name"  value = {firstName} onChange={(e) => setFirst(e.target.value)} />
-    <input className = "input-container" type="text"
-        placeholder = "Last Name" value = {lastName} onChange={(e) => setLast(e.target.value)}/>
+    
     <input className = "input-container" type="password"
         placeholder = "Password" onChange={(e) => setPassword(e.target.value)}  />
      <input className = "input-container" type="password"
@@ -126,3 +122,7 @@ return(
     )
 }
 export default Login;
+/** <input className = "input-container" type="text"
+        placeholder = "First Name"  value = {firstName} onChange={(e) => setFirst(e.target.value)} />
+    <input className = "input-container" type="text"
+        placeholder = "Last Name" value = {lastName} onChange={(e) => setLast(e.target.value)}/> */

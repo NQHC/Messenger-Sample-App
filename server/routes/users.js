@@ -7,7 +7,7 @@ const User = require("../schema/User");
 
 router.post("/", (req, res) => {
   const {email,password} = req.body
-  console.log(email + " " + password);
+  console.log(email);
   if (!email || !password){
     console.log("Error");
     return res.status(400).send({ msg: "Please enter all fields" });

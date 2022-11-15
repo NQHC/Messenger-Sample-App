@@ -42,7 +42,6 @@ router.get("/", (req, res) => {
 
 router.post("/createMessage",(req,res)=>{
     const{message,chatId,sentBy} = req.body;
-    console.log(req.body);
     Chat.findById(chatId,(err,thisChat) => {
         if (err){
           return res.status(400).json({ msg: "No chat instance found" });}
@@ -63,7 +62,39 @@ router.post("/createMessage",(req,res)=>{
     })
  
 });
+router.delete("/delMessage",async (req,res)=>{
+    const{chatId,message_number} = req.body;
 
+    await Message.findOne({chatId : chatId, message_number: message_number}) // delete message
+    .then((msg)=>{
+      
+        msg.remove();
+    })
+    .catch((err)=>{
+       console.log("Error encountered with Message: " + err);
+    });
+ 
+    await (Chat.findOneAndUpdate({_id : chatId,total_messages : {$gt : 0}},{$inc: {'total_messages' : -1}}))
+    .catch((err)=>{
+       console.log("Error with chat: " + err);// check if chat exists and has messages
+    }
+    )
+    
+   
+    await Message.updateMany({message_number: {$gt: message_number},chatId:chatId} ,{$inc: {'message_number' : -1}}) // increment count of messages above input down one so they are still in order
+    .then(()=>{
+        return res.status(200).json({msg: "Success"});  
+    })
+    .catch((err)=>{
+        return res.status(400).json({msg: "Error Encountered with Messages",err});
+    })
+  
+    
+      
+   
+  
+ 
+});
 
 
 router.post("/createChat",(req,res)=>{
@@ -86,7 +117,32 @@ router.post("/createChat",(req,res)=>{
     return res.status(200).json({msg : newChat._id + "\n" + newChat.users[0] + " " + newChat.users[1]});
 });
  
-
-
+router.delete("/delChat",async (req,res)=>{
+    const {id} = req.body;
+    await (Chat.findById(id))
+    .then((chat) => {
+            User.updateMany({'_id' : {$in:[chat.users[0],chat.users[1]]}},
+                {$pullAll : { chats : [id] }} ,(err)=>
+                {
+                    if (err){
+                        console.log("User Update Error")
+                    }
+                }
+              );
+            Message.deleteMany({chatId : id},(err)=> {
+                if (err){
+                console.log("Message deletetion Error");
+                }
+            }) 
+           chat.remove();
+    })
+    .then(chat =>{
+        return res.status(201).json({msg: "Chat deleted",chat});
+    })
+    .catch(err => {
+        return res.status(400).json({msg: "Error Encountered",err});
+    })
+    
+  })
 
 module.exports = router;

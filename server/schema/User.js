@@ -14,10 +14,7 @@ const UserSchema = mongoose.Schema({
     type:String,
     default: "basic",
   },
-  chats: {
-    type: Array,
-    default: [],
-  },
+  chats: [{type: mongoose.Schema.ObjectId, ref :"Chat"}],
 });
 
 module.exports = mongoose.model("user", UserSchema);

@@ -15,10 +15,12 @@ app.use(express.json());
 const userRoute = require("./routes/users");
 const chatRoute = require("./routes/chatInstance");
 const queueRoute = require("./routes/queue");
+const adminRoute = require("./routes/admin");
 
 app.use("/queue",queueRoute);
 app.use("/users",userRoute);
 app.use("/chat",chatRoute);
+app.use("/admin",adminRoute);
 
 
 const io = new Server(http, {

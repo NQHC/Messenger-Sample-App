@@ -74,7 +74,7 @@ router.post("/login", (req, res) => {
     })}
   )});
 
-router.delete("/del",(req,res)=>{
+router.delete("/del",async(req,res)=>{
   const {id} = req.body;
   await (User.findById(id))
     .then(user=>user.remove())
@@ -86,4 +86,29 @@ router.delete("/del",(req,res)=>{
     )
 })
 
+router.put("/update",async(req,res,next)=> {
+  const{role,id} = req.body;
+  if (role && id){
+    if(role === "admin"){
+      await User.findById(id)
+      .then((user) => {
+        if (user.role !== "admin"){
+          user.role = role;
+          user.save((err)=> {
+            if(err){
+              res.status("400").json({msg:"Error Occured",error:err.msg});
+              process.exit(1);
+            }
+            res.status("201").json({msg:"Update Successful",user});
+          });
+        } else{
+          res.status("400").json({msg:"User already an Admin"});
+        }
+      })
+      .catch((error)=> {
+        res.status("400").json({msg:"Error Occured",error:error.msg});
+      })
+    }
+  }
+})
 module.exports = router;

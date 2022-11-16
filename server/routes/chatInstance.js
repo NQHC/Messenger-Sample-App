@@ -95,7 +95,24 @@ router.delete("/delMessage",async (req,res)=>{
   
  
 });
-
+router.post("/editMessage",async (req,res)=>{
+    const{chatId,message_number,updatedMessage} = req.body;
+    if (!chatId || !message_number || !updatedMessage){
+        return res.status(400).json({msg: "Incorrect Input"});  
+    }
+    await Message.findOneAndUpdate({chatId : chatId, message_number: message_number},{message: updatedMessage}) // delete message
+    .then(()=>{
+        return res.status(200).json({msg: "Message is now " + updatedMessage});  
+       
+    })
+    .catch((err)=>{
+        return res.status(400).json({msg: "Error encountered finding message"}); 
+    });
+ 
+   
+    
+  
+});
 
 router.post("/createChat",(req,res)=>{
     const{user1,user2,} = req.body
@@ -103,9 +120,11 @@ router.post("/createChat",(req,res)=>{
     const newChat = new Chat({
         users: Users,
     })
+    console.log(user1 + "\n" + user2);
     for (i = 0; i <2; i++){
         User.findById(Users[i],(err,user)=> {
             if (err){
+                console.log("User not found");
                 return res.status(400).json({msg: "User1 not found: "})
             }
             user.chats.push(newChat._id);

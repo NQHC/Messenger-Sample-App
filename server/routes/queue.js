@@ -3,63 +3,57 @@ const express = require("express");
 const router = express.Router();
 require("dotenv/config");
 const Queue = require("../schema/InChatQueue");
+const axios = require('axios');
 /* GET users listing. */
 
-router.post("/", (req, res) => {
-   
-
-    const tags = []; 
-   
-    const {userId,tag1,tag2,tag3,reqtags} = req.body;
+router.post("/", async (req, res) => {
+    const userId = req.body.userId;
+    
+    const tags = req.body.tags;
     if (!userId){
       return res.status(400).json({ msg: "Did not send User Id" });
     }
-    if (tag1){
-      tags.push(tag1);
-    const first =  Queue.findOne({tags: tag1})
-    if (first){
-    //  createChat(userId,first);
-      res.status(200).json({msg: "Success Tag1"});
-    }
-    }
-    if(tag2){
-      tags.push(tag2);
-      const second =  Queue.findOne({tags: tag2});
-      if (second){
-     //   createChat(userId,first);
-        res.status(200).json({msg: "Success Tag2"});
+    await Queue.findOne({tags: {$in : tags}})
+    .then(queue => {
+      if(!queue){
+        console.log("Not in Queue");
+        const inQueue = new Queue({
+          user: userId,
+          tags: tags
+        })
+        inQueue.save();
+        return res.status(200).json({msg:"Added to Queue"})
       }
-    }
-    if(tag3){
-        tags.push(tag3);
-      const third =  Queue.findOne({tags: tag3});
-      if (third){
-      //  createChat(userId,first);
-        res.status(200).json({msg: "Success Tag3"});
+      else{
+        console.log("In Queue" + queue);
+        user2 = queue.user;
+        user1 = userId;
+        const body = {user1, user2}
+        axios.post("http://localhost:8080/chat/createChat",body)
+        .then((ret)=>{
+          queue.remove();
+          return res.status(200).json({msg:"Already in Queue"});
+            
+        })
+        .catch((err)=>{
+            console.log(err);
+            return res.status(400).json({msg:"Error creating chat"});
+        });
       }
-    }
-    const user2Id =   Queue.findOne({});
-    if (user2Id){
-      //createchat (userId,user2Id);
-      res.status(200).json({msg: "Success"});
-    }
-    else{
-      const inQueue = new Queue({
-        user: userId,
-        tags: tags
     })
-      inQueue.save();
-    }
-    
-
-   //if (reqtags == 'false'){
-  //  for (var i = 0; i < )
-    //return res.status(200).json("false");
-   //}
-   //else{
-    //return res.status(200).json("true");
-   //}
-    //return res.status(200).json({reqtags});
+    .catch(err => {
+      return res.status(400).json({err});
+    })
 })
-
+router.delete("/del",async (req,res)=>{
+  const {id} = req.body;
+  await (Queue.findOne({user : id}))
+    .then(user=>user.remove())
+    .then(user =>
+      res.status(201).json({msg: "User deleted from Queue",user})
+    )
+    .catch(error =>
+      res.status(400).json({msg:"An error occured(user not found)",error:error.msg})
+    )
+})
 module.exports = router;

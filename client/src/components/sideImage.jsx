@@ -4,7 +4,7 @@ import Chat from '../pages/Chat.jsx';
 import { useNavigate } from "react-router-dom";
 export default function Link({chatId, NavId}){
     const navigate = useNavigate();
-    const setChat = (id) => {
+    const setChat = (id) => { // go to sidebar func to navigate to specific chat room based on this id
         const A = chatId;
        
         

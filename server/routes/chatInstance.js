@@ -1,3 +1,4 @@
+const { application } = require("express");
 const express = require("express");
 const router = express.Router({ mergeParams: true });
 require("dotenv/config");
@@ -23,7 +24,7 @@ router.get("/", (req, res) => {
         else {
             currM = total;
         }
-        const quantity = 10;   
+        const quantity = 20;   
          Message.find({ // get last 10 messages
             chatId, 
             message_number: 
@@ -64,7 +65,8 @@ router.post("/createMessage",(req,res)=>{
 });
 router.delete("/delMessage",async (req,res)=>{
     const{chatId,message_number} = req.body;
-
+ 
+    console.log(chatId + "    " + message_number);
     await Message.findOne({chatId : chatId, message_number: message_number}) // delete message
     .then((msg)=>{
       

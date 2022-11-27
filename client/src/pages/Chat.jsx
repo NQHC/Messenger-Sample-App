@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react';
-import { BrowserRouter, Route, Routes} from "react-router-dom"
+import React, { useEffect, useState, useRef } from 'react';
 import './App.css';
 import './Styles.css';
 import io  from "socket.io-client";
 import '../components/sidebar.jsx';
 import '../components/chatbar.jsx';
+import '../components/chatmessage.jsx';
 import axios from 'axios';
 import SideBar from '../components/sidebar.jsx';
 import ChatBar from '../components/chatbar.jsx';
@@ -16,6 +16,7 @@ import { useNavigate } from "react-router-dom";
 import './Styles.css';
 
 import '../configuration/index';
+import Message from '../components/chatmessage.jsx';
 
 
 const room = "socket.id";
@@ -25,13 +26,25 @@ function Chat() {
   const[message,setMessage] = useState("");
   const[response,setResponse] = useState("");
   const[chatId,setChat] = useState(user.activechat);
+  const[totalM, settotalM] = useState(0);
   const [viewedMessages,setviewedMessages] = useState([]);
 
+  const messagesEndRef = useRef(null)
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
+  }
+  useEffect(() => {
+    scrollToBottom()
+  }, [viewedMessages]);
+
   useEffect(()=>{
-    if (user.id == ""){
+    if (user.id === ""){
       navigate("/login");
     }
   });  
+  useEffect(() => {
+    checkMessages();
+  }, []);
   // Configuration sets header and parameters based on inputted parameters
   const Config = (params) => {
     let config = {
@@ -58,8 +71,6 @@ const sendMessage = event => {
    
     axios.post("http://localhost:8080/chat/createMessage",body)
     .then(res=>{
-        const{msg} = res.data;
-        console.log(msg);
         checkMessages();
     })
     .catch((err)=>{
@@ -74,14 +85,18 @@ const sendMessage = event => {
     */
   };
  
-const checkMessages = () =>{
+const checkMessages = (total) =>{
 
   
-  axios.get(`http://localhost:8080/chat/`, Config({ chatId }))
+  axios.get(`http://localhost:8080/chat/`, Config({total, chatId }))
   .then((res) => {
    var allMessages = res.data;
     setviewedMessages(allMessages.messages);
-   console.log(viewedMessages[0].message);
+    
+    if(viewedMessages.length > 0 && viewedMessages[viewedMessages.length-1].message_number > totalM){
+      settotalM(viewedMessages[viewedMessages.length-1].message_number);
+    }
+
    //setMessages({allMessages})
   })
   .catch(function (error) {
@@ -89,6 +104,8 @@ const checkMessages = () =>{
   });
   
 }
+
+
 
 const changeChat = (chatId) => {
     setChat(chatId);
@@ -106,30 +123,45 @@ const changeChat = (chatId) => {
        <SideBar goChat = {changeChat}/>
        <ChatBar chat = {chatId}/>
       <div className="Chat-header">
-        <p>
-          Connected {chatId}
-        </p>
        
+
       <form onSubmit={sendMessage}>
+       <div style = {{
+        width: 'calc(95% - 120px)',
+        display: 'flex',
+        flexDirection: 'row',
+        flexWrap: 'nowrap',
+        justifyContent: 'center',
+        alignContent: 'stretch',
+        alignItems: 'center',
+        position:'absolute',
+        bottom: '2%',
+        left:'calc(120px + 1%)',
+  }}>
        <input
           type="text"
+          style = {{width:'100%'}}
           value={message}
           placeholder="Message..."
-          className = "input-container" style={{position:'absolute',bottom:'2%',left:'calc(120px + 5%)',width:'calc(90% - 132px)'}}
-          onChange={(event) => setMessage(event.target.value)}
-          
+          className = "input-container" 
+          onChange={(event) => setMessage(event.target.value)}  
         />
-        <button className = "Button" type = "submit">Send</button>
+         <button className = "Button" type = "submit" style = {{width:'5%'}}>^</button>
+        </div>
       </form>
-      <button className = "Button" onClick={checkMessages}>Check</button>
-      <div className = "replies">
-          <p>Response : {response}</p>
-      </div>
-      {viewedMessages.map((n)=> (
-        <div>{n.message}</div>
+     
+     <div className = "message-view">
+     <div ref = {messagesEndRef}/>
+     {viewedMessages.length > 0 && viewedMessages[viewedMessages.length-1].message_number < totalM && <input type="image" className = "iconImg" src="arrow.png" style = {{transform: 'scaleY(-1'}} alt="Button" onClick = {() => {checkMessages(viewedMessages[viewedMessages.length-1].message_number+19)}}/>}
+      {viewedMessages.slice(0).reverse().map((n)=> (
+        <Message FullMessage = {n}/>    
       ))}
-       </div>     
-       </div>
+      {viewedMessages.length >= 20 && viewedMessages[0].message_number !== 1 && <input type="image" className = "iconImg" src="arrow.png"  alt="Button" onClick = {() => {checkMessages(viewedMessages[0].message_number)}}/>}
+      </div>
+      </div>
+      </div>
+       
+      
   );
 }
 

@@ -30,7 +30,7 @@ router.post("/", async (req, res) => {
         user1 = userId;
         const body = {user1, user2}
         axios.post("http://localhost:8080/chat/createChat",body)
-        .then((ret)=>{
+        .then(()=>{
           queue.remove();
           return res.status(200).json({msg:"Already in Queue"});
             

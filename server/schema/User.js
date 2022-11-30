@@ -10,11 +10,22 @@ const UserSchema = mongoose.Schema({
     type: String,
     required: true,
   },
+  phone: {
+    type: String,
+    required: true,
+  },
   role: {
     type:String,
     default: "basic",
   },
   chats: [{type: mongoose.Schema.ObjectId, ref :"Chat"}],
+  queuestatus: {
+    type : Boolean,
+    default : false
+  },
+  username: {
+    type : String,
+  }
 });
 
 module.exports = mongoose.model("user", UserSchema);

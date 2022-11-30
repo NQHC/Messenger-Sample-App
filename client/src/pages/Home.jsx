@@ -7,18 +7,78 @@ import '../components/sidebar.jsx';
 import Tag from '../components/tags.jsx';
 import SideBar from '../components/sidebar.jsx';
 import user from "../configuration/index.js";
+import axios from 'axios';
+
 function Home() {
 const navigate = useNavigate();
 
-
+const [QueueStatus,switchStatus] =useState(user.qstat);
+const [QueueButton,EnableButton] = useState(true);
+const [tags, setTags] = useState([]); 
+const QueuePath = {
+  Enter: 'shuffle.png',
+  Leave : 'shuffleout.png'
+}
+useEffect(()=>{
+  if (user.id === ""){
+    navigate("/login");
+  }
+});  
 const goChat = (n) => {
     user.activechat = n;
     navigate("/chat");
-  
+ 
+}
+
+const toggleQueue = () => {
+  EnableButton(false);
+  switchStatus(!QueueStatus);
+  if (!QueueStatus){
+    console.log("Entering Queue");
+    updateUserQueue(!QueueStatus);
+    const userId = user.id;
+    const body = {userId,tags};
+   
+    axios.post("http://localhost:8080/queue/",body)
+    .then(res=>{
+        EnableButton(true);
+    })
+    .catch((err)=>{
+        console.log(err.response.data.msg);
+        EnableButton(true);
+    });
+  }
+  else{
+    updateUserQueue(!QueueStatus);
+    const id = user.id;
+    console.log("Leaving Queue")
+    axios.delete("http://localhost:8080/queue/del",{data:{id:id}})
+    .then(res=>{
+        EnableButton(true);
+    })
+    .catch((err)=>{
+        console.log(err.response.data.msg);
+        EnableButton(true);
+    });
+  }
+}
+const updateUserQueue = (QueueStatus) => {
+  const id = user.id;
+  const body = {id,QueueStatus}
+  axios.put("http://localhost:8080/users/toggleQueue",body)
+  .then(res=>{
+    
+  })
+  .catch((err)=>{
+      console.log("Error with toggle\n");
+      console.log(err.response.data.msg);
+  });
 }
 const goLogin = () => {
   navigate("/login");
 }
+
+//        <button className="Button" onClick = {goLogin}>Login</button>
 
 return (
   
@@ -27,21 +87,20 @@ return (
       <SideBar goChat = {goChat}/>
         <div className="container">  
         <h1>{user.id}</h1>
-        <button className="Button" onClick = {goLogin}>Login</button>
+
      
-        <input type="image" className = "imgBut" src="shuffle.png" name="saveForm" onClick={goChat} alt="Button" />
-        
-        <div className='tagBox' style={{top:'55%',position:"absolute"}}>
-        <Tag TagName="Random Tag"/>
-        <Tag TagName="test"/>
-        <Tag TagName="sample"/>
-        <Tag TagName="Hobbies"/>
-        <Tag TagName="Red"/>
-        <Tag TagName="Blue"/>
-        <Tag TagName="Animals"/>
-        <Tag TagName="Rock Climbing"/>
-        <Tag TagName="swimming"/>
-        <Tag TagName="erie"/>
+        <input type="image" disabled = {!QueueButton} className = "imgBut" src={QueuePath[QueueStatus ? 'Leave' : 'Enter']} name="saveForm" onClick={toggleQueue} alt="Button" />
+        <div className='tagBox' >
+        <Tag TagName="Random Tag" taglist={tags} setTags = {setTags}/>
+        <Tag TagName="test" taglist={tags} setTags = {setTags}/>
+        <Tag TagName="sample" taglist={tags} setTags = {setTags}/>
+        <Tag TagName="Hobbies" taglist={tags} setTags = {setTags}/>
+        <Tag TagName="Red" taglist={tags} setTags = {setTags}/>
+        <Tag TagName="Blue" taglist={tags} setTags = {setTags}/>
+        <Tag TagName="Animals" taglist={tags} setTags = {setTags}/>
+        <Tag TagName="Rock Climbing" taglist={tags} setTags = {setTags}/>
+        <Tag TagName="swimming" taglist={tags} setTags = {setTags}/>
+        <Tag TagName="erie" taglist={tags} setTags = {setTags}/>
         </div>
       
       <img src ="bunny.png" className = "bunny" alt = "a cute bunny"/>

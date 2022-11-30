@@ -6,9 +6,9 @@ const User = require("../schema/User");
 /* GET users listing. */
 
 router.post("/", (req, res) => {
-  const {email,password} = req.body
+  const {email,password,phone} = req.body
   console.log(email);
-  if (!email || !password){
+  if (!email || !password || !phone){
     console.log("Error");
     return res.status(400).send({ msg: "Please enter all fields" });
   }
@@ -17,6 +17,10 @@ router.post("/", (req, res) => {
     /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
   if (!emCheck.test(email)) {
     return res.status(400).json({ msg: "Invalid email" });
+  }
+  const phCheck = /^[0-9\b\+\-\(\)]+$/;
+  if(!phCheck.test(phone) || phone.length < 10){
+    return res.status(400).json({ msg: "Invalid Phone Number" });
   }
   // Password Validation
   if (password.length < 6) {
@@ -31,7 +35,8 @@ router.post("/", (req, res) => {
     }
     const newUser = new User({
       email,
-      password
+      password,
+      phone
     });
     bcrypt.hash(password,10).then(async (hash)=>{
       newUser.password = hash;
@@ -68,7 +73,11 @@ router.post("/login", (req, res) => {
         user: {
           id: user.id,
           email: user.email,
-          chats: user.chats
+          chats: user.chats,
+          queuestatus : user.queuestatus,
+          phone : user.phone,
+          username : user.username,
+          role : user.role,
         },
       })
     })}
@@ -111,4 +120,25 @@ router.put("/update",async(req,res,next)=> {
     }
   }
 })
+router.put("/toggleQueue",async(req,res,next)=> {
+  const{id,QueueStatus} = req.body;
+  console.log("ID : " + id + "QUEUE: " + QueueStatus + "\n");
+      await User.findById(id)
+      .then((user) => {
+          user.queuestatus = QueueStatus;
+          user.save((err)=> {
+            if(err){
+              res.status("400").json({msg:"Error Occured",error:err.msg});
+              process.exit(1);
+            }
+            res.status("201").json({msg:"Toggled Successful,",user});
+          });
+      
+      })
+      .catch((error)=> {
+        res.status("400").json({msg:"Error Occured",error:error.msg});
+      })
+})
+ 
+
 module.exports = router;

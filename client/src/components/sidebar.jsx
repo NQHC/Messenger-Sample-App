@@ -12,7 +12,6 @@ export default function SideBar({goChat}){
   
     const setChatId = (id) => {
         goChat(id);
-        console.log(id);
     }
     
     const goHome = () => {

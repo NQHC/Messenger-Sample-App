@@ -11,6 +11,13 @@ const mongoose = require("mongoose");
 app.use(cors());
 app.use(express.urlencoded({extended : true}));
 app.use(express.json());
+const io = new Server(http, {
+  cors: {
+    origin: "http://localhost:3000",
+    methods: ["GET", "POST"],
+  },
+});
+app.set('socketio',io);
 
 const userRoute = require("./routes/users");
 const chatRoute = require("./routes/chatInstance");
@@ -23,12 +30,7 @@ app.use("/chat",chatRoute);
 app.use("/admin",adminRoute);
 
 
-const io = new Server(http, {
-  cors: {
-    origin: "http://localhost:3000",
-    methods: ["GET", "POST"],
-  },
-});
+
 mongoose.connect(process.env.DATABASE_URL, {
   serverSelectionTimeoutMS: 5000
 }).catch(err => console.log(err.reason));
@@ -45,10 +47,13 @@ app.get("/", (req, res) => {
 });
 
 io.on("connection", (socket) => {
-  socket.emit("Socket_ID",socket.id)
+  
   console.log("Test");
   console.log("ID is :" + socket.id)
-  socket.join("socket.id");
+
+  socket.on("in_chat",(chatId) => {
+    socket.join(chatId);
+  });
 
   socket.on("send_message", (data) => {
     console.log(data.roomNumbers);

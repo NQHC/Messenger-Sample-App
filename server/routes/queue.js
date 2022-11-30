@@ -28,11 +28,33 @@ router.post("/", async (req, res) => {
         console.log("In Queue" + queue);
         user2 = queue.user;
         user1 = userId;
-        const body = {user1, user2}
-        axios.post("http://localhost:8080/chat/createChat",body)
+        var body = {user1, user2}
+         axios.post("http://localhost:8080/chat/createChat",body)
         .then(()=>{
           queue.remove();
-          return res.status(200).json({msg:"Already in Queue"});
+          id = user2;
+          QueueStatus = false; 
+          body = {QueueStatus,id};
+          axios.put("http://localhost:8080/users/toggleQueue",body)
+          .then(()=> {
+            id = user1;
+            body = {QueueStatus,id};
+            axios.put("http://localhost:8080/users/toggleQueue",body)
+            .then(()=>{
+              return res.status(200).json({msg:"Created Chat"});
+            })
+            .catch((err)=>{
+              console.log(err);
+              return res.status(400).json({msg:"Error toggling user1"});
+            })
+          })
+          .catch((err)=>{
+            console.log(err);
+            return res.status(400).json({msg:"Error togglin user2"});
+          })
+        
+
+      //    return res.status(200).json({msg:"Already in Queue"});
             
         })
         .catch((err)=>{

@@ -5,12 +5,18 @@
   var chats = [];
   var role;
   var activechat;
+  var phone;
+  var qstat;
+  var username = "";
   const user = {
     id,
     email,
     chats,
     role,
-    activechat
+    activechat,
+    phone,
+    qstat,
+    username
   };
   
   

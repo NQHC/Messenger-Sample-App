@@ -14,8 +14,8 @@ export default function Link({chatId, NavId}){
     }
     return (
         <div> 
-    <button style = {Style} class = "tooltip" onClick={setChat}>
-      <p class="tooltip-text">
+    <button style = {Style} className = "tooltip" onClick={setChat}>
+      <p className="tooltip-text">
         {chatId}
       </p>
       </button>

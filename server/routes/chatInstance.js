@@ -1,5 +1,6 @@
-const { application } = require("express");
+
 const express = require("express");
+
 const router = express.Router({ mergeParams: true });
 require("dotenv/config");
 
@@ -9,47 +10,53 @@ const Message = require("../schema/Message");
 const User = require("../schema/User");
 /* GET users listing. */
 
-router.get("/", (req, res) => {
+router.get("/", async (req, res) => {
+    
+    console.log("RECEIVED REQUEST FOR MESSAGES\n");
     const  {chatId,total} = req.query; // chat id and total from query
     if (!chatId){ // if chat id was not sent 
+        console.log("Error 1");
         return res.status(400).json({ msg: "Did not send chat Id" });}
-   
-      Chat.findById(chatId,(err,thisChat) => {
-      if (err){
-        return res.status(400).json({ msg: "No chat instance found" });}
-        
+     
+      await Chat.findById(chatId)
+      .then((thisChat)=> {
         if (!total){ // if new request set total messages to chat room's total
-        currM = thisChat.total_messages;
-        }
-        else {
-            currM = total;
-        }
-        const quantity = 20;   
-         Message.find({ // get last 10 messages
-            chatId, 
-            message_number: 
-                { $lte: currM , $gt: currM-quantity} // return 10 messages
-        }, (err, theseM)=>{
-            if (err){
-                return res.status(400).json({ msg: "Start a conversation" });}
-            var messages = {};
-            messages = theseM.map((n=>n));
-           
-            res.status(200).json({ messages });
-        })
-       
-    });
+            currM = thisChat.total_messages;
+            }
+            else {
+                currM = total;
+            }
+            const quantity = 20;   
+             Message.find({ // get last 10 messages
+                chatId, 
+                message_number: 
+                    { $lte: currM , $gt: currM-quantity} // return 10 messages
+            }, (err, theseM)=>{
+                if (err){
+                    console.log("Error 2");
+
+                    return res.status(400).json({ msg: "Start a conversation" });}
+                var messages = {};
+                messages = theseM.map((n=>n));
+                totalM =thisChat.total_messages;
+                res.status(200).json({ messages,totalM });
+            })
+      })
+      .catch((err)=>{
+        console.log("Error 3");
+
+        return res.status(400).json({ msg: "No chat instance found" });
+      })
+      
+        
 });
 
-router.post("/createMessage",(req,res)=>{
+router.post("/createMessage",async (req,res)=>{
+ 
     const{message,chatId,sentBy} = req.body;
-    Chat.findById(chatId,(err,thisChat) => {
-        if (err){
-          return res.status(400).json({ msg: "No chat instance found" });}
-        console.log(thisChat);
-        console.log(thisChat.total_messages);
+    await Chat.findById(chatId)
+    .then((thisChat)=>{
         total = thisChat.total_messages+1;
-       
         const newMessage = new Message({
             message: message,
             chatId : chatId,
@@ -59,18 +66,25 @@ router.post("/createMessage",(req,res)=>{
         newMessage.save();
         thisChat.total_messages = total;
         thisChat.save();
-      return res.status(200).json({msg: "Success"});
+      var io = req.app.get('socketio');
+      console.log("Emitting!");
+      io.to(chatId).emit('updated_messages');
+      return res.status(200).json({msg: "Success"}); 
     })
- 
+    .catch((err)=>{
+        return res.status(400).json({ msg: "No chat instance found" });
+    })
 });
+ 
 router.delete("/delMessage",async (req,res)=>{
     const{chatId,message_number} = req.body;
- 
+  
     console.log(chatId + "    " + message_number);
-    await Message.findOne({chatId : chatId, message_number: message_number}) // delete message
+    await Message.deleteMany({ chatId: chatId, message_number: message_number})
     .then((msg)=>{
-      
-        msg.remove();
+        console.log("Deleted : " + msg.deletedCount);
+        var io = req.app.get('socketio');
+        io.to(chatId).emit('updated_messages');
     })
     .catch((err)=>{
        console.log("Error encountered with Message: " + err);
@@ -78,6 +92,7 @@ router.delete("/delMessage",async (req,res)=>{
  
     await (Chat.findOneAndUpdate({_id : chatId,total_messages : {$gt : 0}},{$inc: {'total_messages' : -1}}))
     .catch((err)=>{
+        
        console.log("Error with chat: " + err);// check if chat exists and has messages
     }
     )
@@ -104,6 +119,8 @@ router.post("/editMessage",async (req,res)=>{
     }
     await Message.findOneAndUpdate({chatId : chatId, message_number: message_number},{message: updatedMessage}) // delete message
     .then(()=>{
+        var io = req.app.get('socketio');
+        io.to(chatId).emit('updated_messages');
         return res.status(200).json({msg: "Message is now " + updatedMessage});  
        
     })
@@ -122,12 +139,16 @@ router.post("/createChat",(req,res)=>{
     const newChat = new Chat({
         users: Users,
     })
+   
     console.log(user1 + "\n" + user2);
     for (i = 0; i <2; i++){
         User.findById(Users[i],(err,user)=> {
             if (err){
                 console.log("User not found");
                 return res.status(400).json({msg: "User1 not found: "})
+            }
+            if (user.chats.length > 7){
+                return res.status(400).json({msg: "User has too many chats"})
             }
             user.chats.push(newChat._id);
             user.save();

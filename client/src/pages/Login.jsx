@@ -22,6 +22,9 @@ const setUser = (User) =>{
     user.id = User.id;
     user.chats = [...User.chats];
     user.email = User.email;
+    user.qstat = User.queuestatus;
+    user.username = User.username;
+    user.phone = User.phone;
     navigate("/");
 }
 const clearFields = () =>{
@@ -45,7 +48,7 @@ const goChat = () => { // go to Chat
     navigate("/chat");
 }
 const checkRegister = () =>{
-    const body = {email, password}
+    const body = {email, password,phone}
     axios.post("http://localhost:8080/users/",body)
     .then(res=>{
         const {user} = res.data;

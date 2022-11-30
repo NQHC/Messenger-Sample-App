@@ -1,10 +1,31 @@
 
 import '../pages/Styles.css';
-import chatwindow from '../pages/Chat.jsx';
-export default function ChatBar ({chat}){
+import axios from 'axios';
+import { useNavigate } from "react-router-dom";
 
+export default function ChatBar ({id}){
+    const navigate = useNavigate();
+    const deleteChat = () => {   
+     
+        axios.delete("http://localhost:8080/chat/delChat",{data:{id:id}})
+        .then(res=>{
+            goHome();
+        })
+        .catch((err)=>{
+          console.log("Error:")
+            console.log(err.response.data.msg);
+        });
+       
+      };
+      const goHome = () => {
+        navigate("/");
+    }
     return (
-        <div style = {Style}><div style = {{position: 'absolute', left:'35px',bottom:'30%'}}>{chat}</div></div>
+        <div style = {Style}>
+        <button className = "Button" style = {{position: 'absolute', right:'35px',bottom:'5px',width:'50px'}} onClick={() =>{deleteChat()}}>➢</button>
+
+        <div style = {{position: 'absolute', left:'35px',bottom:'30%'}}>{id}</div>
+        </div>
     );
 
 }
@@ -17,6 +38,7 @@ const Style = {
     justifyContent: 'flex-start',
     alignItems: 'flex-start',
     height: '8vh',
+    minWidth:'600px',
     width: 'calc(100% - 120px)',
     backgroundColor: '#D2E5D0',
     fontFamily: ' Helvetica, Arial, sans-serif',

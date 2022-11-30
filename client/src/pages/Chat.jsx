@@ -28,7 +28,7 @@ function Chat() {
   const[chatId,setChat] = useState(user.activechat);
   const[totalM, settotalM] = useState(0);
   const [viewedMessages,setviewedMessages] = useState([]);
-
+  
   const messagesEndRef = useRef(null)
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
@@ -42,9 +42,20 @@ function Chat() {
       navigate("/login");
     }
   });  
+
   useEffect(() => {
     checkMessages();
-  }, []);
+  }, [chatId]);
+
+  useEffect(() => {
+    checkMessages();
+    socket.emit("in_chat",chatId);
+    socket.off('updated_messages').on("updated_messages", () => {
+      console.log("RECEIVED A MESSAGE UPDATE REQUEST");
+      checkMessages();
+    });
+  },[]);
+
   // Configuration sets header and parameters based on inputted parameters
   const Config = (params) => {
     let config = {
@@ -64,8 +75,11 @@ function Chat() {
   }
   
 const sendMessage = event => {
-   
     event.preventDefault();
+    var trimmed = message.trim(); 
+ 
+ 
+    if (trimmed !== ""){
     const sentBy = user.id;
     const body = {message,chatId,sentBy};
    
@@ -76,27 +90,22 @@ const sendMessage = event => {
     .catch((err)=>{
         console.log(err.response.data.msg);
     });
-    setMessage('');
-  /* console.log("Sending :" + message);
-      socket.emit("send_message", {
-        message,
-         roomNumbers: room,
-      });
-    */
+  }
+  setMessage('');
   };
  
-const checkMessages = (total) =>{
+const checkMessages = async(total) =>{
 
-  
   axios.get(`http://localhost:8080/chat/`, Config({total, chatId }))
   .then((res) => {
    var allMessages = res.data;
     setviewedMessages(allMessages.messages);
-    
+    settotalM(allMessages.totalM);
+  /**
     if(viewedMessages.length > 0 && viewedMessages[viewedMessages.length-1].message_number > totalM){
       settotalM(viewedMessages[viewedMessages.length-1].message_number);
     }
-
+ */  
    //setMessages({allMessages})
   })
   .catch(function (error) {
@@ -107,23 +116,18 @@ const checkMessages = (total) =>{
 
 
 
-const changeChat = (chatId) => {
-    setChat(chatId);
-    user.activechat= chatId;
+const changeChat = async(newId) => {
+    user.activechat= newId;
+    setChat(newId);
   }
-  useEffect(() => {
-    socket.on("reply_message", ( message2 ) => {
-      console.log("WORKING: " + message2);
-      setResponse(message2);
-    });
-  }, []);
+
   
   return (
       <div>
        <SideBar goChat = {changeChat}/>
-       <ChatBar chat = {chatId}/>
+       <ChatBar id = {chatId}/>
       <div className="Chat-header">
-       
+      
 
       <form onSubmit={sendMessage}>
        <div style = {{
@@ -146,7 +150,7 @@ const changeChat = (chatId) => {
           className = "input-container" 
           onChange={(event) => setMessage(event.target.value)}  
         />
-         <button className = "Button" type = "submit" style = {{width:'5%'}}>^</button>
+         <button className = "Button" type = "submit" style = {{width:'5%'}}>➢</button>
         </div>
       </form>
      
@@ -154,7 +158,7 @@ const changeChat = (chatId) => {
      <div ref = {messagesEndRef}/>
      {viewedMessages.length > 0 && viewedMessages[viewedMessages.length-1].message_number < totalM && <input type="image" className = "iconImg" src="arrow.png" style = {{transform: 'scaleY(-1'}} alt="Button" onClick = {() => {checkMessages(viewedMessages[viewedMessages.length-1].message_number+19)}}/>}
       {viewedMessages.slice(0).reverse().map((n)=> (
-        <Message FullMessage = {n}/>    
+        <Message FullMessage = {n} totalM = {totalM} settotalM = {settotalM}/>    
       ))}
       {viewedMessages.length >= 20 && viewedMessages[0].message_number !== 1 && <input type="image" className = "iconImg" src="arrow.png"  alt="Button" onClick = {() => {checkMessages(viewedMessages[0].message_number)}}/>}
       </div>

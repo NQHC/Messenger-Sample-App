@@ -36,11 +36,14 @@ export default function Message({FullMessage}){
   };
   
   const deleteMessage = () => {   
+    setOpen(false);
     axios.delete("http://localhost:8080/chat/delMessage",{data:{chatId:chatId, message_number:message_number}})
     .then(res=>{
-        console.log("Deleted")
+    
+  
     })
     .catch((err)=>{
+      console.log("Error:")
         console.log(err.response.data.msg);
     });
    
@@ -82,7 +85,7 @@ export default function Message({FullMessage}){
           {opEdit && <input type="image" className = "iconImg" src="arrow.png" style = {{transform: 'rotate(90deg)',position:'absolute',right:'0px',bottom:'2%'}} alt="Button" onClick = {() => {editMessage()}}/>}
         </button>
         {opMenu && 
-        <div class = "dropdown">
+        <div className = "dropdown">
           <ul>
             <li onClick={() =>{(toggleEdit())}}>Edit</li>
             <li onClick={() =>{deleteMessage()}}>Delete</li>
@@ -98,7 +101,7 @@ export default function Message({FullMessage}){
     return (
         <div style = {{alignSelf:'flex-end'}}>
         <label style= {StyleSent}>  
-        Apple
+        {message}
       </label>
       </div>
     );
@@ -106,7 +109,7 @@ export default function Message({FullMessage}){
 }
 const StyleSent = {
         fontFamily: 'Raleway, sans-serif',
-        fontSize: '0.8125rem',
+        fontSize: '0.9125rem',
         fontWeight: '400',
         textAlign: 'left',
         margin:'5px',
@@ -122,7 +125,7 @@ const StyleSent = {
 }
 const StyleFrom = {
     fontFamily: 'Raleway, sans-serif',
-    fontSize: '0.8125rem',
+    fontSize: '0.9125rem',
     fontWeight: '400',
     textAlign: 'left',
     margin:'5px',

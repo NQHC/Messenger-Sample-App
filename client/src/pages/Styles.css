@@ -23,7 +23,7 @@
   
     min-height:300px;
     width: 55vw;
-   
+    position:relative;
     border-radius: 12px;
     background-color: #ab7053    ;
     display: inline-block;
@@ -188,15 +188,45 @@
   
   }
   .bunny{
-    height: 20%;
+    height: 22%;
     width: 20%;
+    min-width:150px;
     position: sticky;
     justify-content: center;
     align-items: center;
     align-content: center;
     bottom:-2%;
-   
   }
+  @media (max-height: 550px) {
+    .bunny {
+        display: none;
+    }
+    .bunnyAni {
+      display: none;
+    }
+}
+.bunnyAni{
+  height: 22%;
+  width: 20%;
+  min-width:150px;
+  position: sticky;
+  justify-content: center;
+  align-items: center;
+  align-content: center;
+  bottom:-2%;
+  animation: rotating 1s linear infinite alternate;
+}
+@keyframes rotating {
+  from {
+
+    transform: rotate(-10deg);
+  }
+  to {
+
+    transform: rotate(10deg);
+  }
+}
+
   .Chat-header{
   background-color: #382c29;
   min-height: 100vh;
@@ -235,7 +265,7 @@
 .dropdown {
   position: absolute;
   top: 10%;
-  left: 90%;
+  right: 92%;
   width: 50px;
   z-index: 2;
   border: 1px solid rgba(0, 0, 0, 0.04);

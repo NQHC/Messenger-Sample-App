@@ -50,7 +50,7 @@ router.post("/", async (req, res) => {
           })
           .catch((err)=>{
             console.log(err);
-            return res.status(400).json({msg:"Error togglin user2"});
+            return res.status(400).json({msg:"Error toggling user2"});
           })
         
 

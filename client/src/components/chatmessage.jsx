@@ -71,7 +71,7 @@ export default function Message({FullMessage}){
   }
    if (sentByUser){
     return (
-        <div ref = {checkOut} style = {{alignSelf:'flex-start',position:'relative',display:'inline-block'}}>
+        <div ref = {checkOut} style = {{alignSelf:'flex-end',position:'relative',display:'inline-block'}}>
         <button style= {StyleFrom} onClick={() => {toggleMenu()}}>
             {!opEdit && <div>{message}</div>}  
             {opEdit && 
@@ -99,7 +99,7 @@ export default function Message({FullMessage}){
    }
    else{
     return (
-        <div style = {{alignSelf:'flex-end'}}>
+        <div style = {{alignSelf:'flex-start'}}>
         <label style= {StyleSent}>  
         {message}
       </label>
@@ -120,7 +120,7 @@ const StyleSent = {
         borderRadius: '0.5rem',
         padding: '1rem 1.5rem',
         borderStyle: 'none',
-        maxWidth:'250px',
+        maxWidth:'300px',
         display:'inline-block'
 }
 const StyleFrom = {

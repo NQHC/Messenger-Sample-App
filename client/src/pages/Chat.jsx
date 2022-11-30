@@ -95,7 +95,7 @@ const sendMessage = event => {
   };
  
 const checkMessages = async(total) =>{
-
+  console.log("TOTAL:" + total + "\nUser: " + user.id );
   axios.get(`http://localhost:8080/chat/`, Config({total, chatId }))
   .then((res) => {
    var allMessages = res.data;
@@ -153,6 +153,7 @@ const changeChat = async(newId) => {
          <button className = "Button" type = "submit" style = {{width:'5%'}}>➢</button>
         </div>
       </form>
+      {viewedMessages.length > 0 && <div>{viewedMessages[viewedMessages.length-1].message}</div>}
      
      <div className = "message-view">
      <div ref = {messagesEndRef}/>

@@ -103,7 +103,7 @@ return (
         <Tag TagName="erie" taglist={tags} setTags = {setTags}/>
         </div>
       
-      <img src ="bunny.png" className = "bunny" alt = "a cute bunny"/>
+      <img src ="bunny.png" className = {QueueStatus ? "bunnyAni" : 'bunny'} alt = "a cute bunny"/>
         </div>
        
     </div>

@@ -32,9 +32,11 @@ const goChat = (n) => {
 
 const toggleQueue = () => {
   EnableButton(false);
+  if (user.chats.length > 7){
+    return;
+  }
  // switchStatus(!QueueStatus);
   if (!QueueStatus){
-    console.log("Entering Queue");
     updateUserQueue(!QueueStatus);
     const userId = user.id;
     const body = {userId,tags};
@@ -51,7 +53,6 @@ const toggleQueue = () => {
   else{
     updateUserQueue(!QueueStatus);
     const id = user.id;
-    console.log("Leaving Queue")
     axios.delete("http://localhost:8080/queue/del",{data:{id:id}})
     .then(res=>{
        // EnableButton(true);
@@ -103,14 +104,14 @@ const Config = (params) => {
 }
 
 const checkToggle = async() => {
-  console.log("Checking Toggle");
+  //console.log("Checking Toggle");
   const userId = user.id;
   axios.get(`http://localhost:8080/users/queueStatus`,Config({userId}))
   .then((res) => {
-  console.log("Updated Toggle :");
-  console.log(res.data.queuestatus);
+  //console.log("Updated Toggle :");
+  //console.log(res.data.queuestatus);
   user.qstat = res.data.queuestatus;
-  console.log(QueueStatus);
+  //console.log(QueueStatus);
   if (res.data.queuestatus === false){
     setTags([]);
   }

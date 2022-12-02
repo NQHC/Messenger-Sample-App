@@ -44,10 +44,13 @@ export default function SideBar({goChat}){
         const userId = user.id;
         axios.get(`http://localhost:8080/users/chats`,Config({userId}))
         .then((res) => {
-        console.log("Updated Chats :");
-        console.log(res.data.chats);
+      //  console.log("Updated Chats :");
+      //  console.log(res.data.chats);
         user.chats = res.data.chats;
         setChats(res.data.chats);
+        if (!user.chats.includes(user.activechat)){
+          goHome();
+        }
         })
     .catch(function (error) {
     console.log(error);
@@ -63,10 +66,8 @@ export default function SideBar({goChat}){
     }
     return (
         <div className ="SideBar" >
-      
         <button className ="Button" style = {{width: '5.5rem'}} onClick={goHome}>Home</button>
         {chatArr.map(i => <div key={i}>
-        
         <Link chatId = {i}  NavId = {setChatId}/>
         </div>)}
         </div>

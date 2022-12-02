@@ -3,6 +3,7 @@ const express = require("express");
 const router = express.Router();
 require("dotenv/config");
 const Queue = require("../schema/InChatQueue");
+const Tag = require("../schema/Tag");
 const axios = require('axios');
 /* GET users listing. */
 
@@ -22,7 +23,23 @@ router.post("/", async (req, res) => {
           tags: tags
         })
         inQueue.save();
-        return res.status(200).json({msg:"Added to Queue"})
+        options = { upsert: true, new: true, setDefaultsOnInsert: true };
+        update = {$inc: {'current' : 1}};
+        console.log("Updating Tag");
+     //   for (i of tags){
+        Tag.findOneAndUpdate({tagstr: "a"},update,options,function(error,result){
+          if (error){
+            console.log("error");
+            return res.status(400).json({msg:"Error with tags"})
+          }
+          else{
+            console.log("success")
+            return res.status(200).json({msg:"Added to Queue"})
+          }
+        })
+     //   };
+        console.log("Did Tag");
+       
       }
       else{
         console.log("In Queue" + queue);
@@ -64,6 +81,7 @@ router.post("/", async (req, res) => {
       }
     })
     .catch(err => {
+      console.log("ERROR");
       return res.status(400).json({err});
     })
 })

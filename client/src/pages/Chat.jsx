@@ -42,6 +42,7 @@ function Chat() {
       navigate("/login");
     }
   });  
+  
 
   useEffect(() => {
     console.log("Entering : " + chatId)

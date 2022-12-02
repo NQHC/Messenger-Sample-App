@@ -1,23 +1,38 @@
 
 import '../pages/Styles.css';
+import React, { useEffect, useState } from 'react';
 
 export default function Tag({TagName,setTags,taglist}){
-
+    const [reset,setReset] = useState(false);
     const addOrRemove = (tag) => {
 
         const newTags = [...taglist];
         const index = newTags.indexOf(tag);
         if (index === -1) {
-          console.log("Adding");
           newTags.push(tag);
         } else {
-          console.log("Removing");
           newTags.splice(index, 1);
         }
        
         setTags(newTags);
-        console.log("Tags: " + taglist)
+       // console.log("Tags: " + taglist)
+    }
+    useEffect(() => {
+      if (taglist.length == 0){
+        setReset(true);
       }
+    },[taglist]);
+    useEffect(()=>{
+      if (reset == true){
+        setReset(false);
+      }
+    },[reset]);
+
+    if (reset){
+      return(
+        <div></div>
+      )
+    }
     if ((taglist.length < 3 || taglist.includes(TagName) )){
         return (
             <div>

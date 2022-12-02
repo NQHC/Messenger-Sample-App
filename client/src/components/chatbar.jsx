@@ -22,7 +22,7 @@ export default function ChatBar ({id}){
     }
     return (
         <div style = {Style}>
-        <button className = "Button" style = {{position: 'absolute', right:'35px',bottom:'5px',width:'50px'}} onClick={() =>{deleteChat()}}>➢</button>
+        <button className = "Button" style = {{position: 'absolute', right:'35px',bottom:'5px',width:'50px',backgroundColor:'red'}} onClick={() =>{deleteChat()}}>➢</button>
 
         <div style = {{position: 'absolute', left:'35px',bottom:'30%'}}>{id}</div>
         </div>
@@ -38,9 +38,10 @@ const Style = {
     justifyContent: 'flex-start',
     alignItems: 'flex-start',
     height: '8vh',
-    minWidth:'600px',
+    minWidth:'330px',
     width: 'calc(100% - 120px)',
     backgroundColor: '#D2E5D0',
     fontFamily: ' Helvetica, Arial, sans-serif',
     fontSize:'24px',
+    overflow:'hidden',
 }

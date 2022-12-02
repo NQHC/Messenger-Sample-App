@@ -51,8 +51,13 @@ io.on("connection", (socket) => {
   console.log("Test");
   console.log("ID is :" + socket.id)
 
-  socket.on("in_chat",(chatId) => {
-    socket.join(chatId);
+  socket.on("in_room",(roomId) => {
+    console.log("Joined + " + roomId)
+    socket.join(roomId);
+  });
+  socket.on("out_chat",(chatId) => {
+    console.log("Left + " + chatId)
+    socket.leave(chatId);
   });
 
   socket.on("send_message", (data) => {

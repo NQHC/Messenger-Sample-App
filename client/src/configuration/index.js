@@ -1,4 +1,6 @@
 
+  import io  from "socket.io-client";
+
   // User settings for account
   var id = "";
   var email;
@@ -8,6 +10,7 @@
   var phone;
   var qstat;
   var username = "";
+  const socket = io.connect("http://localhost:8080");
   const user = {
     id,
     email,
@@ -16,7 +19,8 @@
     activechat,
     phone,
     qstat,
-    username
+    username,
+    socket
   };
   
   

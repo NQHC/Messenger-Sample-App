@@ -3,6 +3,7 @@ const router = express.Router();
 require("dotenv/config");
 const bcrypt = require ("bcryptjs")
 const User = require("../schema/User");
+const e = require("express");
 /* GET users listing. */
 
 router.post("/", (req, res) => {
@@ -106,7 +107,7 @@ router.put("/update",async(req,res,next)=> {
           user.save((err)=> {
             if(err){
               res.status("400").json({msg:"Error Occured",error:err.msg});
-              process.exit(1);
+             // process.exit(1);
             }
             res.status("201").json({msg:"Update Successful",user});
           });
@@ -129,9 +130,14 @@ router.put("/toggleQueue",async(req,res,next)=> {
           user.save((err)=> {
             if(err){
               res.status("400").json({msg:"Error Occured",error:err.msg});
-              process.exit(1);
+             // process.exit(1);
             }
+            else{
+            var io = req.app.get('socketio');
+              // console.log("Emitting Create to " + user1 + " + " + user2);
+            io.to(id).emit('qToggle');
             res.status("201").json({msg:"Toggled Successful,",user});
+            }
           });
       
       })
@@ -139,6 +145,35 @@ router.put("/toggleQueue",async(req,res,next)=> {
         res.status("400").json({msg:"Error Occured",error:error.msg});
       })
 })
- 
+router.get("/chats", async (req, res) => { 
+  const  {userId} = req.query; // user id from query
+  if (!userId){ // if chat id was not sent 
+      return res.status(400).json({ msg: "Did not send user Id" });}
+   
+    await User.findById(userId)
+    .then((user)=> {
+      return res.json({
+          chats: user.chats,
+      })
+    })
+    .catch((err)=>{
+      return res.status(400).json({ msg: "User not found" });
+    })
+});
+router.get("/queueStatus", async (req, res) => { 
+  const  {userId} = req.query; // user id from query
+  if (!userId){ // if chat id was not sent 
+      return res.status(400).json({ msg: "Did not send user Id" });}
+   
+    await User.findById(userId)
+    .then((user)=> {
+      return res.json({
+        queuestatus: user.queuestatus,
+      })
+    })
+    .catch((err)=>{
+      return res.status(400).json({ msg: "User not found" });
+    })
+});
 
 module.exports = router;

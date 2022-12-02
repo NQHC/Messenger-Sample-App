@@ -32,7 +32,7 @@ const goChat = (n) => {
 
 const toggleQueue = () => {
   EnableButton(false);
-  switchStatus(!QueueStatus);
+ // switchStatus(!QueueStatus);
   if (!QueueStatus){
     console.log("Entering Queue");
     updateUserQueue(!QueueStatus);
@@ -41,11 +41,11 @@ const toggleQueue = () => {
    
     axios.post("http://localhost:8080/queue/",body)
     .then(res=>{
-        EnableButton(true);
+       // EnableButton(true);
     })
     .catch((err)=>{
         console.log(err.response.data.msg);
-        EnableButton(true);
+       // EnableButton(true);
     });
   }
   else{
@@ -54,11 +54,11 @@ const toggleQueue = () => {
     console.log("Leaving Queue")
     axios.delete("http://localhost:8080/queue/del",{data:{id:id}})
     .then(res=>{
-        EnableButton(true);
+       // EnableButton(true);
     })
     .catch((err)=>{
         console.log(err.response.data.msg);
-        EnableButton(true);
+       // EnableButton(true);
     });
   }
 }
@@ -79,11 +79,56 @@ const goLogin = () => {
 }
 
 //        <button className="Button" onClick = {goLogin}>Login</button>
+useEffect(() => {
+  checkToggle();
+  user.socket.off('qToggle').on("qToggle", () => { // not implemented
+    checkToggle();
+  });
+},[]);
+const Config = (params) => {
+  let config = {
+    headers: {
+      "Content-Type": "application/json",
+    },
+  };
+  if (params) {
+    config = {
+      ...config,
+      params: {
+        ...params,
+      },
+    };
+  }
+  return config;
+}
+
+const checkToggle = async() => {
+  console.log("Checking Toggle");
+  const userId = user.id;
+  axios.get(`http://localhost:8080/users/queueStatus`,Config({userId}))
+  .then((res) => {
+  console.log("Updated Toggle :");
+  console.log(res.data.queuestatus);
+  user.qstat = res.data.queuestatus;
+  console.log(QueueStatus);
+  if (res.data.queuestatus === false){
+    setTags([]);
+  }
+  switchStatus(res.data.queuestatus);
+
+  EnableButton(true);
+
+  })
+.catch(function (error) {
+console.log(error);
+});
+}
+
 
 return (
   
  
-      <div className = "Page">
+      <div className = "PageN">
       <SideBar goChat = {goChat}/>
         <div className="container">  
         <h1>{user.id}</h1>

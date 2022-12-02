@@ -15,7 +15,7 @@ router.get("/", async (req, res) => {
     console.log("RECEIVED REQUEST FOR MESSAGES\n");
     const  {chatId,total} = req.query; // chat id and total from query
     if (!chatId){ // if chat id was not sent 
-        console.log("Error 1");
+        //console.log("Error 1");
         return res.status(400).json({ msg: "Did not send chat Id" });}
      
       await Chat.findById(chatId)
@@ -26,15 +26,13 @@ router.get("/", async (req, res) => {
             else {
                 currM = total;
             }
-            const quantity = 20;   
+            const quantity = 100;   
              Message.find({ // get last 10 messages
                 chatId, 
                 message_number: 
                     { $lte: currM , $gt: currM-quantity} // return 10 messages
             }, (err, theseM)=>{
                 if (err){
-                    console.log("Error 2");
-
                     return res.status(400).json({ msg: "Start a conversation" });}
                 var messages = {};
                 messages = theseM.map((n=>n));
@@ -43,7 +41,7 @@ router.get("/", async (req, res) => {
             })
       })
       .catch((err)=>{
-        console.log("Error 3");
+       // console.log("Error 3");
 
         return res.status(400).json({ msg: "No chat instance found" });
       })
@@ -82,9 +80,6 @@ router.delete("/delMessage",async (req,res)=>{
     console.log(chatId + "    " + message_number);
     await Message.deleteMany({ chatId: chatId, message_number: message_number})
     .then((msg)=>{
-        console.log("Deleted : " + msg.deletedCount);
-        var io = req.app.get('socketio');
-        io.to(chatId).emit('updated_messages');
     })
     .catch((err)=>{
        console.log("Error encountered with Message: " + err);
@@ -100,6 +95,8 @@ router.delete("/delMessage",async (req,res)=>{
    
     await Message.updateMany({message_number: {$gt: message_number},chatId:chatId} ,{$inc: {'message_number' : -1}}) // increment count of messages above input down one so they are still in order
     .then(()=>{
+        var io = req.app.get('socketio');
+        io.to(chatId).emit('updated_messages');
         return res.status(200).json({msg: "Success"});  
     })
     .catch((err)=>{
@@ -133,30 +130,51 @@ router.post("/editMessage",async (req,res)=>{
   
 });
 
-router.post("/createChat",(req,res)=>{
+router.post("/createChat",async(req,res)=>{ // not optimal
     const{user1,user2,} = req.body
     const Users = [user1,user2];
     const newChat = new Chat({
         users: Users,
     })
-   
+    var valid = true;
     console.log(user1 + "\n" + user2);
-    for (i = 0; i <2; i++){
-        User.findById(Users[i],(err,user)=> {
-            if (err){
-                console.log("User not found");
-                return res.status(400).json({msg: "User1 not found: "})
-            }
-            if (user.chats.length > 7){
-                return res.status(400).json({msg: "User has too many chats"})
-            }
-            user.chats.push(newChat._id);
-            user.save();
-        })
-    }
    
-    newChat.save();
-    return res.status(200).json({msg : newChat._id + "\n" + newChat.users[0] + " " + newChat.users[1]});
+        await User.find({'_id':{$in:[ Users[0],Users[1]]}})
+        .then((users) => {
+            if (users[0].chats.length > 7 || users[1].chats.length > 7){
+                valid = false;
+            }
+            else {
+                  users[0].chats.push(newChat._id);
+                  users[1].chats.push(newChat._id);
+                  users[0].save();
+                  users[1].save();
+    
+            }
+            console.log(users[0].chats);
+           
+        })
+        .catch(err => {
+            console.log("User not found");
+            valid = false;
+           // process.exit(1);
+        })
+    
+     if (valid){
+        newChat.save();
+         var io = req.app.get('socketio');
+        // console.log("Emitting Create to " + user1 + " + " + user2);
+         io.to(user1).emit('updated_chats');
+         io.to(user2).emit('updated_chats');
+         return res.status(200).json({msg: "Made Chat"});
+     }
+     else{
+        return res.status(400).json({msg: "Something went wrong"});
+     }
+    
+  
+   
+   
 });
  
 router.delete("/delChat",async (req,res)=>{
@@ -175,13 +193,18 @@ router.delete("/delChat",async (req,res)=>{
                 if (err){
                 console.log("Message deletetion Error");
                 }
-            }) 
+            })
+           var io = req.app.get('socketio');
+           user1 = chat.users[0].toString();
+           user2 = chat.users[1].toString();
+           console.log("Emitting Delete to " + user1 + " + " + user2);
+           io.to(user1).emit('updated_chats');
+           io.to(user2).emit('updated_chats');
            chat.remove();
-    })
-    .then(chat =>{
-        return res.status(201).json({msg: "Chat deleted",chat});
+           return res.status(201).json({msg: "Chat deleted",chat});
     })
     .catch(err => {
+        console.log("errpr with del");
         return res.status(400).json({msg: "Error Encountered",err});
     })
     

@@ -25,6 +25,7 @@ const setUser = (User) =>{
     user.qstat = User.queuestatus;
     user.username = User.username;
     user.phone = User.phone;
+    user.socket.emit("in_room",User.id);
     navigate("/");
 }
 const clearFields = () =>{

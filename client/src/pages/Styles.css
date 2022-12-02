@@ -1,11 +1,15 @@
 
 
 .Page{
-  height: 100vh;
   min-height:600px;
   width: 100vw;
   min-width:650px;
-  background-size:'cover';
+  background: url(hillback.png) no-repeat center center fixed;  height: 100vh;
+
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
   background-position: center;
   display: flex;
   flex-direction: column;
@@ -17,12 +21,34 @@
   overflow: hidden;
   
   }
+  .PageN{
+    background: url(hillbacknight.png) no-repeat center center fixed;  height: 100vh;
+    min-height:600px;
+    width: 100vw;
+    min-width:650px;
+   
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 1rem;
+    align-items: center;
+   
+    background-color: #332D2D;
+    overflow: hidden;
+    
+    }
   /*Tan: #c9a976*/
   .container {
     height: 85vh;
   
     min-height:300px;
     width: 55vw;
+    min-width:220px;
     position:relative;
     border-radius: 12px;
     background-color: #ab7053    ;
@@ -229,8 +255,13 @@
 
   .Chat-header{
   background-color: #382c29;
-  min-height: 100vh;
-  min-width:350px;
+  background: url(stone.png) no-repeat center center fixed;  height: 100vh;
+
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+  
   color: white;
   }
 
@@ -252,6 +283,7 @@
   
   left:calc(120px + 1%);
   bottom: 10%;
+
   width : calc(95% - 120px);
   height: 80vh;
   overflow-y:auto;

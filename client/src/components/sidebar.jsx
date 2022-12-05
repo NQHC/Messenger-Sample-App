@@ -39,7 +39,7 @@ export default function SideBar({goChat}){
         return new Promise( res => setTimeout(res, delay) );
     }
     const checkChat = async() => {
-        await timeout(50);
+        await timeout(200);
         console.log("Checking Chat");
         const userId = user.id;
         axios.get(`http://localhost:8080/users/chats`,Config({userId}))

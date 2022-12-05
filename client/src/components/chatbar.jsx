@@ -2,6 +2,7 @@
 import '../pages/Styles.css';
 import axios from 'axios';
 import { useNavigate } from "react-router-dom";
+import user from '../configuration/index';
 
 export default function ChatBar ({id}){
     const navigate = useNavigate();
@@ -24,7 +25,7 @@ export default function ChatBar ({id}){
         <div style = {Style}>
         <button className = "Button" style = {{position: 'absolute', right:'35px',bottom:'5px',width:'50px',backgroundColor:'red'}} onClick={() =>{deleteChat()}}>➢</button>
 
-        <div style = {{position: 'absolute', left:'35px',bottom:'30%'}}>{id}</div>
+        <div style = {{position: 'absolute', left:'35px',bottom:'30%'}}>{user.username}</div>
         </div>
     );
 

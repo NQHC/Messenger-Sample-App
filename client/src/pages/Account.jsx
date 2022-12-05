@@ -16,7 +16,8 @@ const [email,setEmail] = useState(user.email);
 const [phone,setPhone] = useState(user.phone);
 const [error,setError] = useState("Enter Display Name");
 //const [DisplayName,setDisplayName] = useState("");
-const [dispColor,setdispColor] = useState("color");
+//const userDisp = user.username.split(" ");
+const [dispColor,setdispColor] = useState("color" );
 const [dispAni,setdispAni] = useState("animal");
 
 
@@ -54,8 +55,7 @@ return (
   
  
       <div className = "PageN">
-        {user.username}
-        <div className="container" style = {{minWidth:'550px'}}>  
+        <div className="container" style = {{minWidth:'550px'}}>
         <h1>Account Info</h1>
         <input type="text" disabled minLength = {2} style = {{marginTop: '5%',width:'95%', backgroundColor: 'white', textAlign:'center'}} value={realName} placeholder="Real Name" className = "input-container"   onChange={(event) => (setRealName)}  />
       

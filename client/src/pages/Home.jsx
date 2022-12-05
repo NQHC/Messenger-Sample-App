@@ -177,7 +177,7 @@ return (
 
         <input type="image" disabled = {!QueueButton} className = "imgBut" src={QueuePath[QueueStatus ? 'Leave' : 'Enter']} name="saveForm" onClick={toggleQueue} alt="Button" />
         <form onSubmit={addTag}>
-        <input type="text" maxLength = {15} minLength = {3} style = {{marginTop: '5%',width:'50%'}} value={cTag} placeholder="Tag" className = "input-container"  disabled = {tags.length < 3 ? false : true}onChange={(event) => setcTag(event.target.value)}  />
+        <input type="text" maxLength = {15} minLength = {3} style = {{marginTop: '10%',width:'50%'}} value={cTag} placeholder="Tag" className = "input-container"  disabled = {tags.length < 3 ? false : true}onChange={(event) => setcTag(event.target.value)}  />
         </form>
         <div className='tagBox' >
         {tags?.map((n)=> (

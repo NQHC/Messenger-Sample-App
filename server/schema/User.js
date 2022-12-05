@@ -25,6 +25,18 @@ const UserSchema = mongoose.Schema({
   },
   username: {
     type : String,
+  },
+  realName: {
+    type : String,
+    required : true,
+  },
+  secure : {
+    type : String,
+    requried : true,
+  },
+  secureAns : {
+    type : String,
+    required : true,
   }
 });
 

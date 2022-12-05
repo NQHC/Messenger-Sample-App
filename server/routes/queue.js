@@ -24,25 +24,34 @@ router.post("/", async (req, res) => {
         })
         inQueue.save();
         options = { upsert: true, new: true, setDefaultsOnInsert: true };
-        update = {$inc: {'current' : 1}};
+        update = {'current' : true};
         console.log("Updating Tag");
-     //   for (i of tags){
-        Tag.findOneAndUpdate({tagstr: "a"},update,options,function(error,result){
-          if (error){
-            console.log("error");
-            return res.status(400).json({msg:"Error with tags"})
-          }
-          else{
-            console.log("success")
-            return res.status(200).json({msg:"Added to Queue"})
-          }
-        })
-     //   };
-        console.log("Did Tag");
-       
+        for ( var i = 0; i < tags.length;i++){
+          Tag.findOneAndUpdate({tagstr: tags[i] },update,options,function(error,result){
+            if (error){
+              console.log("error w/ tags");
+            }
+          })
+        }
+        return res.status(200).json({msg:"Added to Queue"})
+  
       }
       else{
         console.log("In Queue" + queue);
+        update = {'current' : false};
+        Tag.updateMany({tagstr: {$in : queue.tags }},update,function(error,result){
+          if (error){
+            console.log("error w/ decrementing current tags");
+          }
+        })
+        update =  {$inc : {'popular' : 1}};
+        const matchtags = tags.filter(element => queue.tags.includes(element));
+        Tag.updateMany({tagstr: {$in : matchtags }},update,function(error,result){
+          if (error){
+            console.log("error w/ incrementing popular tags");
+          }
+        })
+       
         user2 = queue.user;
         user1 = userId;
         var body = {user1, user2}
@@ -88,7 +97,19 @@ router.post("/", async (req, res) => {
 router.delete("/del",async (req,res)=>{
   const {id} = req.body;
   await (Queue.findOne({user : id}))
-    .then(user=>user.remove())
+    .then(user=>{
+      Tag.updateMany({tagstr: {$in : user.tags }},{'current' : false},function(error){
+        if (error){
+          console.log("error w/ setting tags to false");
+        }
+      })
+      Tag.deleteMany({current: false, popular : 0},function(error){
+        if (error){
+          console.log("error w/ deleting tags");
+        }
+      })
+      user.remove()
+    })
     .then(user =>
       res.status(201).json({msg: "User deleted from Queue",user})
     )
@@ -96,4 +117,11 @@ router.delete("/del",async (req,res)=>{
       res.status(400).json({msg:"An error occured(user not found)",error:error.msg})
     )
 })
+router.get("/tags", async (req, res) => {
+    
+  const activeTags = await Tag.find({current: true}).sort('-popular').limit(15);
+  const popTags = await Tag.find({current : false}).sort('-popular').limit(30-activeTags.length);
+  let result = activeTags.concat(popTags);
+  return res.status(200).json(result);
+});
 module.exports = router;

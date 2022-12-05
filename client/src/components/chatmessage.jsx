@@ -108,21 +108,23 @@ export default function Message({FullMessage}){
    }
 }
 const StyleSent = {
-        fontFamily: 'Raleway, sans-serif',
-        fontSize: '0.9125rem',
-        fontWeight: '400',
-        textAlign: 'left',
-        margin:'5px',
-        color: 'black',
-        letterSpacing: '0.01rem',
-        fontStyle: 'normal',
-        backgroundColor: '#FFD898',
-        borderRadius: '0.5rem',
-        padding: '1rem 1.5rem',
-        borderStyle: 'none',
-        maxWidth:'300px',
-        display:'inline-block'
+  fontFamily: 'Raleway, sans-serif',
+  fontSize: '0.9125rem',
+  fontWeight: '400',
+  textAlign: 'left',
+  margin:'5px',
+  color: 'black',
+  letterSpacing: '0.01rem',
+  fontStyle: 'normal',
+  backgroundColor: '#FFD898',
+  borderRadius: '0.5rem',
+  padding: '1rem 1.5rem',
+  borderStyle: 'none',
+  maxWidth:'300px',
+  display:'inline-block',
+  wordWrap: 'break-word'
 }
+
 const StyleFrom = {
     fontFamily: 'Raleway, sans-serif',
     fontSize: '0.9125rem',

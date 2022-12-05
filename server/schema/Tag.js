@@ -1,14 +1,17 @@
 const mongoose = require("mongoose");
 
 const TagSchema =  mongoose.Schema({
-    tagstr: String,
+    tagstr: {
+        type: String,
+        required: true,
+    },
     popular:{
         type: Number,
         default: 0,
     },
     current:{
-        type:Number,
-        default: 0,
+        type:Boolean,
+        default: false,
     },
 }) 
 module.exports = mongoose.model("tag", TagSchema);

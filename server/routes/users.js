@@ -6,10 +6,10 @@ const User = require("../schema/User");
 const e = require("express");
 /* GET users listing. */
 
-router.post("/", (req, res) => {
-  const {email,password,phone} = req.body
+router.post("/", async(req, res) => {
+  const {email,password,phone, firstName, lastName,secure, secureAns} = req.body
   console.log(email);
-  if (!email || !password || !phone){
+  if (!email || !password || !phone || !firstName || !lastName || !secure || !secureAns){
     console.log("Error");
     return res.status(400).send({ msg: "Please enter all fields" });
   }
@@ -29,6 +29,10 @@ router.post("/", (req, res) => {
       .status(400)
       .json({ msg: "Password should be 6 or more characters" });
   }
+  if (firstName.length < 2 || lastName.length < 2){
+    return res.status(400).json({ msg: "Name should be longer" });
+  }
+  const realName = firstName + " " + lastName;
   User.findOne({email}).then((user)=>{
     if (user){
       console.log("In use");
@@ -37,7 +41,10 @@ router.post("/", (req, res) => {
     const newUser = new User({
       email,
       password,
-      phone
+      phone,
+      secure,
+      secureAns,
+      realName
     });
     bcrypt.hash(password,10).then(async (hash)=>{
       newUser.password = hash;
@@ -47,6 +54,9 @@ router.post("/", (req, res) => {
             id: user.id,
             email: user.email,
             chats: user.chats,
+            realName: user.realName,
+            username: user.username,
+            phone: user.phone,
           }
         })
     })
@@ -56,7 +66,7 @@ router.post("/", (req, res) => {
  
 });
 
-router.post("/login", (req, res) => {
+router.post("/login", async (req, res) => {
   const { email, password } = req.body;
   
   // Simple validation
@@ -79,6 +89,7 @@ router.post("/login", (req, res) => {
           phone : user.phone,
           username : user.username,
           role : user.role,
+          realName: user.realName,
         },
       })
     })}
@@ -175,5 +186,29 @@ router.get("/queueStatus", async (req, res) => {
       return res.status(400).json({ msg: "User not found" });
     })
 });
+router.post("/username", async (req, res) => {
+  const {DisplayName,id} = req.body;
+  // Simple validation
+  if (!DisplayName || !id) {
+    return res.status(400).json({ msg: "Error" });
+  }
+  // Check for existing user
+  await User.findOne({ id }).then((user) => {
+    user.username = DisplayName;
+    user.save((err)=> {
+      if(err){
+        res.status("400").json({msg:"Error Occured",error:err.msg});
+      }
+      else{
+        return res.json({
+            username: user.username,
+        })
+      }
+    })
+  })
+  .catch((err)=>{
+    res.status("400").json({msg:"Error Occured",err});
+  })
 
+});
 module.exports = router;

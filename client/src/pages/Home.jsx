@@ -15,6 +15,7 @@ const navigate = useNavigate();
 const [QueueStatus,switchStatus] =useState(user.qstat);
 const [QueueButton,EnableButton] = useState(true);
 const [tags, setTags] = useState([]); 
+const [fetchedTags, setfetchedTags] = useState([]);
 const QueuePath = {
   Enter: 'shuffle.png',
   Leave : 'shuffleout.png'
@@ -78,10 +79,14 @@ const updateUserQueue = (QueueStatus) => {
 const goLogin = () => {
   navigate("/login");
 }
+const goAccount = () => {
+  navigate("/account");
+}
 
 //        <button className="Button" onClick = {goLogin}>Login</button>
 useEffect(() => {
   checkToggle();
+  getTags();
   user.socket.off('qToggle').on("qToggle", () => { // not implemented
     checkToggle();
   });
@@ -103,6 +108,21 @@ const Config = (params) => {
   return config;
 }
 
+const getTags = async() => {
+  axios.get(`http://localhost:8080/queue/tags`,)
+  .then((res) => {
+    var tagarr = Object.keys(res.data).map(function (i){
+      return res.data[i];
+    });
+    var t = [];
+    //Object.keys(tagarr);
+    setfetchedTags(tagarr);
+    console.log(tagarr);
+  })
+  .catch(function (error) {
+    console.log("Error Fetching Tags")
+  })
+}
 const checkToggle = async() => {
   //console.log("Checking Toggle");
   const userId = user.id;
@@ -125,19 +145,8 @@ console.log(error);
 });
 }
 
-
-return (
-  
- 
-      <div className = "PageN">
-      <SideBar goChat = {goChat}/>
-        <div className="container">  
-        <h1>{user.id}</h1>
-
-     
-        <input type="image" disabled = {!QueueButton} className = "imgBut" src={QueuePath[QueueStatus ? 'Leave' : 'Enter']} name="saveForm" onClick={toggleQueue} alt="Button" />
-        <div className='tagBox' >
-        <Tag TagName="Random Tag" taglist={tags} setTags = {setTags}/>
+/**
+ *  <Tag TagName="Random Tag" taglist={tags} setTags = {setTags}/>
         <Tag TagName="test" taglist={tags} setTags = {setTags}/>
         <Tag TagName="sample" taglist={tags} setTags = {setTags}/>
         <Tag TagName="Hobbies" taglist={tags} setTags = {setTags}/>
@@ -147,6 +156,38 @@ return (
         <Tag TagName="Rock Climbing" taglist={tags} setTags = {setTags}/>
         <Tag TagName="swimming" taglist={tags} setTags = {setTags}/>
         <Tag TagName="erie" taglist={tags} setTags = {setTags}/>
+ */
+const [cTag, setcTag] = useState("");
+const addTag = event => {
+  event.preventDefault();
+  var scrubbed = cTag.toLowerCase().trim(); 
+  if (scrubbed !== "" && tags.length < 3){
+    tags.push(scrubbed);
+  }
+setcTag('');
+}
+return (
+  
+ 
+      <div className = "PageN">
+      <SideBar goChat = {goChat}/>
+        <div className="container">  
+        <h1>{user.username}</h1>
+        <button className ="Button" style = {{width: '2.5rem', position: 'absolute',top:'0%',right:'0%'}} onClick={goAccount}>⚙️</button>
+
+        <input type="image" disabled = {!QueueButton} className = "imgBut" src={QueuePath[QueueStatus ? 'Leave' : 'Enter']} name="saveForm" onClick={toggleQueue} alt="Button" />
+        <form onSubmit={addTag}>
+        <input type="text" maxLength = {15} minLength = {3} style = {{marginTop: '5%',width:'50%'}} value={cTag} placeholder="Tag" className = "input-container"  disabled = {tags.length < 3 ? false : true}onChange={(event) => setcTag(event.target.value)}  />
+        </form>
+        <div className='tagBox' >
+        {tags?.map((n)=> (
+          <Tag TagName = {n} taglist={tags} setTags = {setTags}/>
+        ))}
+        {fetchedTags.map((n)=> (
+          <div>
+          {!tags.includes(n.tagstr) && <Tag TagName = {n.tagstr} taglist={tags} setTags = {setTags}/>}
+          </div>
+        ))}
         </div>
       
       <img src ="bunny.png" className = {QueueStatus ? "bunnyAni" : 'bunny'} alt = "a cute bunny"/>

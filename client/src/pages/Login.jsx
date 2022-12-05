@@ -16,6 +16,9 @@ const [lastName,setLast] = useState("");
 const [phone,setPhone] = useState("");
 const [password,setPassword] = useState("");
 const [password2,setPassword2] = useState("");
+const [secure,setSecure] = useState("0");
+const [secureAns,setSecureAns] = useState("");
+
 
 const [Error,setError] = useState("");
 const setUser = (User) =>{
@@ -25,8 +28,14 @@ const setUser = (User) =>{
     user.qstat = User.queuestatus;
     user.username = User.username;
     user.phone = User.phone;
+    user.realName = User.realName; 
     user.socket.emit("in_room",User.id);
+    if (!User.username){
+        navigate("/account")
+    }
+    else{
     navigate("/");
+    }
 }
 const clearFields = () =>{
     setEmail("");
@@ -36,6 +45,8 @@ const clearFields = () =>{
     setPassword("");
     setPassword2("");
     setError("");
+    setSecure("0");
+    setSecureAns("");
 }
 const changeLogMode = () => { // change for Sign in to Sign up
     setLogMode(logMode === "login" ? "create" : "login");
@@ -49,7 +60,7 @@ const goChat = () => { // go to Chat
     navigate("/chat");
 }
 const checkRegister = () =>{
-    const body = {email, password,phone}
+    const body = {email,password,phone,lastName,firstName,secure,secureAns}
     axios.post("http://localhost:8080/users/",body)
     .then(res=>{
         const {user} = res.data;
@@ -107,11 +118,27 @@ return(
         placeholder = "Email" value = {email} onChange={(e) => setEmail(e.target.value)}  />
     <input className = "input-container" type="text" 
         placeholder = "Phone Number" value = {phone} onChange={(e) => setPhone(e.target.value)}/>
-    
+    <input className = "input-container" type="text" 
+        placeholder = "First Name" value = {firstName} onChange={(e) => setFirst(e.target.value)}/>
+    <input className = "input-container" type="text" 
+        placeholder = "Last Name" value = {lastName} onChange={(e) => setLast(e.target.value)}/>
     <input className = "input-container" type="password"
         placeholder = "Password" onChange={(e) => setPassword(e.target.value)}  />
      <input className = "input-container" type="password"
         placeholder = "Repeat Password" value = {password2} onChange={(e) => setPassword2(e.target.value)}/>
+
+        <br></br>
+    <select className = 'input-container' value = {secure} onChange = {(e) => setSecure(e.target.value)}>
+        <option selected value="0" disabled>Security Question</option>
+        <option value="1">What city were you born?</option>
+        <option value="2">What is the name of your favorite pet?</option>
+        <option value="3">What is your mother's maiden name?</option>
+        <option value="4">What high school did you attend?</option>
+        <option value="5">What street did you grow up on?</option>
+    </select>
+    <input className = "input-container" type="text"
+        placeholder = "Security Answer" value = {secureAns} onChange={(e) => setSecureAns(e.target.value)}/>
+
     <div>
     <span style = {{backgroundColor:'#FFCCCB'}}>{Error}</span>
     </div>

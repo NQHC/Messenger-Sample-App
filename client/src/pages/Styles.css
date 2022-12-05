@@ -22,7 +22,7 @@
   
   }
   .PageN{
-    background: url(hillbacknight.png) no-repeat center center fixed;  height: 100vh;
+    background: url(hillbacknight.svg) no-repeat center center fixed;  height: 100vh;
     min-height:600px;
     width: 100vw;
     min-width:650px;
@@ -46,12 +46,12 @@
   .container {
     height: 85vh;
   
-    min-height:300px;
+    min-height:455px;
     width: 55vw;
-    min-width:220px;
+    min-width:375px;
     position:relative;
     border-radius: 12px;
-    background-color: #ab7053    ;
+   /* background-color: #ab7053    ;*/
     display: inline-block;
     justify-content: center;
     align-items: center;
@@ -59,6 +59,12 @@
     align-content: center;
     overflow:hidden;
     
+    background: #4392F1BF;
+    box-shadow: 0 8px 32px 0 rgba( 31, 38, 135, 0.37 );
+    backdrop-filter: blur( 3.5px );
+    -webkit-backdrop-filter: blur( 3.5px );
+    border-radius: 10px;
+    border: 1px solid rgba( 255, 255, 255, 0.18 );
   }
 
   .Button{
@@ -74,7 +80,6 @@
   }
   .input-container{
     position:relative;
-  
     flex-direction:column;
     border-width:0px;
     border-color:#cccccc;
@@ -87,13 +92,16 @@
     border-radius:8px;
     border-style:hidden; 
     box-shadow: 0px 0px 6px 0px rgba(42,42,42,.75);
-    }
+    background-color: white;
+    color: black;
+
+  }
     
   .logbox{
     align-items: center;
     text-align: center;
     
-    height: 450px;
+    height: 550px;
     width: 375px;
     border-radius: 12px;
     box-shadow: 0px 0px 3px 3px #D2E5D0;
@@ -180,8 +188,11 @@
   }
   .tagBox{
     height: 40%;
+    max-height:105px;
+
+
     position:sticky;
-    width: inherit;
+    width: 100%;
    
     top:60%;
     left:0px;
@@ -191,8 +202,9 @@
     justify-content: center;
     align-content: flex-start;
     align-items: baseline;
-    overflow:hidden;
-  
+    overflow-x:hidden;
+    overflow-y:auto;
+
   }
   .SideBar{
   position: fixed;
@@ -217,13 +229,12 @@
     height: 22%;
     width: 20%;
     min-width:150px;
-    position: sticky;
-    justify-content: center;
-    align-items: center;
-    align-content: center;
-    bottom:-2%;
+    position: absolute;
+    left: 50%;
+    transform : translate(-50%,0);
+    bottom:-10px;
   }
-  @media (max-height: 550px) {
+  @media (max-height: 660px) {
     .bunny {
         display: none;
     }
@@ -235,21 +246,19 @@
   height: 22%;
   width: 20%;
   min-width:150px;
-  position: sticky;
-  justify-content: center;
-  align-items: center;
-  align-content: center;
-  bottom:-2%;
+  position: absolute;
+  left: 50%;
+ 
+  bottom:-10px;
   animation: rotating 1s linear infinite alternate;
 }
 @keyframes rotating {
   from {
-
-    transform: rotate(-10deg);
+    transform : translate(-50%,0) rotate(-10deg);
   }
   to {
+    transform : translate(-50%,0) rotate(10deg);
 
-    transform: rotate(10deg);
   }
 }
 
@@ -284,9 +293,15 @@
   left:calc(120px + 1%);
   bottom: 10%;
 
-  width : calc(95% - 120px);
+  width : calc(98% - 120px);
   height: 80vh;
   overflow-y:auto;
+  background: rgba( 255, 255, 255, 0.25 );
+box-shadow: 0 8px 32px 0 rgba( 31, 38, 135, 0.37 );
+backdrop-filter: blur( 3.5px );
+-webkit-backdrop-filter: blur( 3.5px );
+border-radius: 10px;
+border: 1px solid rgba( 255, 255, 255, 0.18 );
 }
 .iconImg{
   border-radius: 50%;
@@ -320,3 +335,24 @@ li:hover {
   cursor: pointer;
 }
 
+/* ===== Scrollbar CSS ===== */
+  /* Firefox */
+  * {
+    scrollbar-width: auto;
+    scrollbar-color: #32926f #ffffff;
+  }
+
+  /* Chrome, Edge, and Safari */
+  *::-webkit-scrollbar {
+    width: 12px;
+  }
+
+  *::-webkit-scrollbar-track {
+    background: #ffffff;
+  }
+
+  *::-webkit-scrollbar-thumb {
+    background-color: #32926f;
+    border-radius: 12px;
+    border: 1px none #ffffff;
+  }

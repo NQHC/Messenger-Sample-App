@@ -9,6 +9,7 @@
   var activechat;
   var phone;
   var qstat;
+  var realName;
   var username = "";
   const socket = io.connect("http://localhost:8080");
   const user = {
@@ -20,7 +21,8 @@
     phone,
     qstat,
     username,
-    socket
+    socket,
+    realName,
   };
   
   

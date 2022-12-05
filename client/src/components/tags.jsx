@@ -33,10 +33,19 @@ export default function Tag({TagName,setTags,taglist}){
         <div></div>
       )
     }
-    if ((taglist.length < 3 || taglist.includes(TagName) )){
+    else if (taglist.includes(TagName)){
+      return (
+        <div>
+        <input type="checkbox" id={TagName} className="invisibleCheck" checked readOnly/>
+       <label htmlFor={TagName} className = "tag" onClick={() => addOrRemove(TagName)}>{TagName}</label>
+       
+        </div>
+    );
+    }
+    else if ((taglist.length < 3 )){
         return (
             <div>
-            <input type="checkbox" id={TagName} className="invisibleCheck"  />
+            <input type="checkbox" id={TagName} className="invisibleCheck" />
            <label htmlFor={TagName} className = "tag" onClick={() => addOrRemove(TagName)}>{TagName}</label>
            
             </div>

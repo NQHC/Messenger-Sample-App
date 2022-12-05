@@ -111,6 +111,7 @@ const checkMessages = async(total) =>{
   .then((res) => {
    var allMessages = res.data;
     setviewedMessages(allMessages.messages);
+    console.log(allMessages);
     settotalM(allMessages.totalM);
   /**
     if(viewedMessages.length > 0 && viewedMessages[viewedMessages.length-1].message_number > totalM){

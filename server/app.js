@@ -56,7 +56,7 @@ io.on("connection", (socket) => {
     socket.join(roomId);
   });
   socket.on("out_chat",(chatId) => {
-    console.log("Left + " + chatId)
+    //console.log("Left + " + chatId)
     socket.leave(chatId);
   });
 

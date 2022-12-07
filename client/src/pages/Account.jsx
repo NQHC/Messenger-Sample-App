@@ -16,11 +16,19 @@ const [email,setEmail] = useState(user.email);
 const [phone,setPhone] = useState(user.phone);
 const [error,setError] = useState("Enter Display Name");
 //const [DisplayName,setDisplayName] = useState("");
-//const userDisp = user.username.split(" ");
+const [userDisp,setUserDisp] = useState(user.username);
 const [dispColor,setdispColor] = useState("color" );
 const [dispAni,setdispAni] = useState("animal");
+const [userColor,setuserColor] = useState("Select Color");
+const [userAni,setuserAni] = useState("Select Animal");
 
-
+useEffect(()=>{
+    if (user.username){
+        var display = user.username.split(" "); 
+        setuserColor(display[0]);
+        setuserAni(display[1]);
+    }
+},[])
 useEffect(()=>{
   if (user.id === ""){
     navigate("/login");
@@ -63,9 +71,9 @@ return (
         <input type="text" disabled minLength = {2} style = {{marginLeft:'2%', marginTop: '5%',width:'45%', backgroundColor: 'white'}} value={phone} placeholder="Phone #" className = "input-container"  onChange={(event) => (setPhone)}  />
 
         <h1>Display Name</h1>
-        <select className = 'input-container' value = {dispColor} onChange = {(e) => setdispColor(e.target.value)}>
+        <select className = 'input-container' disabled = {user.username} value = {dispColor} onChange = {(e) => setdispColor(e.target.value)}>
         <div></div>
-        <option selected value="color" disabled>Select Color</option>
+        <option selected value="color" disabled>{userColor}</option>
         <option value="Red">Red</option>
         <option value="Orange">Orange</option>
         <option value="Yellow">Yellow</option>
@@ -79,8 +87,8 @@ return (
         <option value="Pink">Pink</option>
         <option value="Brown">Brown</option>
         </select>
-        <select className = 'input-container' style = {{marginLeft:'2%'}}value = {dispAni} onChange = {(e) => setdispAni(e.target.value)}>   
-        <option selected value="animal" disabled>Select Name</option>
+        <select className = 'input-container' disabled = {user.username}  style = {{marginLeft:'2%'}}value = {dispAni} onChange = {(e) => setdispAni(e.target.value)}>   
+        <option selected value="animal" disabled>{userAni}</option>
         <option value="Rabbit">Rabbit</option>
         <option value="Fox">Fox</option>
         <option value="Turtle">Turtle</option>
@@ -94,13 +102,13 @@ return (
         <option value="Fish">Fish</option>
         <option value="Chicken">Chicken</option>
         </select>
-        <button className="Button" style = {{marginLeft:'5%'}} onClick = {function(){ submitDis()}}>Submit
-    </button>
+     {!user.username &&  <button className="Button" style = {{marginLeft:'5%'}} onClick = {function(){ submitDis()}}>Submit
+    </button>}
     <br></br>
-    <button className="Button" style = {{marginTop:'8%'}}onClick = {function(){ goHome()}}>Home
-    </button>
-
-        </div>
+    {user.username && <button className="Button" style = {{marginTop:'8%'}}onClick = {function(){ goHome()}}>Home
+    </button>}
+    {!user.username && <h2>Select Display Name</h2>}
+    </div>
        
     </div>
       )

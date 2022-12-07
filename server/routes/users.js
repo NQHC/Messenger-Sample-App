@@ -134,7 +134,7 @@ router.put("/update",async(req,res,next)=> {
 })
 router.put("/toggleQueue",async(req,res,next)=> {
   const{id,QueueStatus} = req.body;
-  console.log("ID : " + id + "QUEUE: " + QueueStatus + "\n");
+  //console.log("ID : " + id + "QUEUE: " + QueueStatus + "\n");
       await User.findById(id)
       .then((user) => {
           user.queuestatus = QueueStatus;
@@ -158,11 +158,14 @@ router.put("/toggleQueue",async(req,res,next)=> {
 })
 router.get("/chats", async (req, res) => { 
   const  {userId} = req.query; // user id from query
+  console.log("\nReceived Request for updated chats from " + userId + "\n");
+
   if (!userId){ // if chat id was not sent 
       return res.status(400).json({ msg: "Did not send user Id" });}
    
     await User.findById(userId)
     .then((user)=> {
+      console.log("\nuser:" + userId + "\nchats: " + user.chats)
       return res.json({
           chats: user.chats,
       })
@@ -193,13 +196,15 @@ router.post("/username", async (req, res) => {
     return res.status(400).json({ msg: "Error" });
   }
   // Check for existing user
-  await User.findOne({ id }).then((user) => {
+  
+  await User.findOne({ _id : id }).then((user) => {
     user.username = DisplayName;
     user.save((err)=> {
       if(err){
         res.status("400").json({msg:"Error Occured",error:err.msg});
       }
       else{
+        console.log(user.username);
         return res.json({
             username: user.username,
         })

@@ -76,6 +76,7 @@ export default function Message({FullMessage}){
             {!opEdit && <div>{message}</div>}  
             {opEdit && 
               <textarea
+              maxLength={512}
               onKeyDown={handleKeyDown}
               value={updatedMessage}
               style = {editStyle}

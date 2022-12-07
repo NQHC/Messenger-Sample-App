@@ -45,20 +45,20 @@ function Chat() {
   
 
   useEffect(() => {
-    console.log("Entering : " + chatId)
+   // console.log("Entering : " + chatId)
     user.socket.emit("in_room",chatId);
     checkMessages();
     user.socket.off('updated_messages').on("updated_messages", () => {
-      console.log("RECEIVED A MESSAGE UPDATE REQUEST: " + chatId);
+   //   console.log("RECEIVED A MESSAGE UPDATE REQUEST: " + chatId);
       checkMessages();
     });
   },[chatId]);
 
   useEffect(() => {
     checkMessages();
-    console.log("This is me firing");
+  //  console.log("This is me firing");
     user.socket.off('updated_messages').on("updated_messages", () => {
-      console.log("RECEIVED A MESSAGE UPDATE REQUEST: " + chatId);
+   //   console.log("RECEIVED A MESSAGE UPDATE REQUEST: " + chatId);
       checkMessages();
     });
   },[]);
@@ -98,20 +98,20 @@ const sendMessage = event => {
         checkMessages();
     })
     .catch((err)=>{
-        console.log(err.response.data.msg);
+     //   console.log(err.response.data.msg);
     });
   }
   setMessage('');
   };
  
 const checkMessages = async(total) =>{
-  console.log("CHECKING: " + chatId);
+ // console.log("CHECKING: " + chatId);
   await timeout(10);
   axios.get(`http://localhost:8080/chat/`, Config({total, chatId }))
   .then((res) => {
    var allMessages = res.data;
     setviewedMessages(allMessages.messages);
-    console.log(allMessages);
+   // console.log(allMessages);
     settotalM(allMessages.totalM);
   /**
     if(viewedMessages.length > 0 && viewedMessages[viewedMessages.length-1].message_number > totalM){
@@ -121,7 +121,7 @@ const checkMessages = async(total) =>{
    //setMessages({allMessages})
   })
   .catch(function (error) {
-    console.log(error);
+  //  console.log(error);
   });
   
 }
@@ -129,10 +129,10 @@ const checkMessages = async(total) =>{
 
 
 const changeChat = async(newId) => {
-    console.log("Leaving: " + chatId);
+   // console.log("Leaving: " + chatId);
     user.socket.emit("out_chat",chatId);
     
-    console.log("CHANGING CHAT")
+  //  console.log("CHANGING CHAT")
     setChat(newId);
      user.activechat= newId;
   }
@@ -163,6 +163,7 @@ const changeChat = async(newId) => {
           value={message}
           placeholder="Message..."
           className = "input-container" 
+          maxLength={512}
           onChange={(event) => setMessage(event.target.value)}  
         />
          <button className = "Button" type = "submit" style = {{width:'5%'}}>➢</button>

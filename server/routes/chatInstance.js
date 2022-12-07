@@ -151,7 +151,7 @@ router.post("/createChat",async(req,res)=>{ // not optimal
                   users[1].save();
     
             }
-            console.log(users[0].chats);
+            //console.log(users[0].chats);
            
         })
         .catch(err => {
@@ -161,12 +161,18 @@ router.post("/createChat",async(req,res)=>{ // not optimal
         })
     
      if (valid){
-        newChat.save();
-         var io = req.app.get('socketio');
-        // console.log("Emitting Create to " + user1 + " + " + user2);
-         io.to(user1).emit('updated_chats');
-         io.to(user2).emit('updated_chats');
-         return res.status(200).json({msg: "Made Chat"});
+         await newChat.save()
+         .then(async() => {
+            var io = req.app.get('socketio');
+             console.log("Emitting Create to " + user1 + " + " + user2);
+             await io.to(user1).emit('updated_chats');
+             await io.to(user2).emit('updated_chats');
+             return res.status(200).json({msg: "Made Chat"});
+         })
+        .catch((err)=>{
+            return res.status(400).json({msg: "Error Saving"});
+
+        })
      }
      else{
         return res.status(400).json({msg: "Something went wrong"});
@@ -209,5 +215,42 @@ router.delete("/delChat",async (req,res)=>{
     })
     
   })
+ router.get("/display", async (req, res) => {
+    
+    const  {chatId,userId} = req.query; // chat id and asking user from query
+    if (!chatId){ // if chat id was not sent 
+        //console.log("Error 1");
+        return res.status(400).json({ msg: "Did not send chat Id" });}
+     
+      var otherId;
+      await Chat.findById(chatId)
+      .then(async (thisChat)=> {
+         if (userId == thisChat.users[1]){
+            console.log("You are user 1");
+            otherId = thisChat.users[0];
+
+         }
+         else{
+            console.log("You are user 0");
+            otherId = thisChat.users[1];
+         }
+        await User.findOne({ _id : otherId })
+        .then((user) => {
+            return res.json({
+                display: user.username,
+            })
+        })
+        .catch((err)=>{
+            return res.status(400).json({ msg: "Error" });
+        })
+      })
+      .catch((err)=>{
+       // console.log("Error 3");
+
+        return res.status(400).json({ msg: "No chat instance found" });
+      })
+      
+        
+});
 
 module.exports = router;

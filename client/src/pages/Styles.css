@@ -133,11 +133,38 @@
     align-items: center;
     align-content: center;
     border-radius: 50%;
-  
     height: 200px;
     width: 200px;
     top:5%;
+    
   }
+  .flipvert {
+    -webkit-animation: rotate-90-cw 3.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
+    animation: rotate-90-cw 3.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
+  }
+  
+  @-webkit-keyframes rotate-90-cw {
+    0% {
+      -webkit-transform: rotate(0);
+              transform: rotate(0);
+    }
+    100% {
+      -webkit-transform: rotate(180deg);
+              transform: rotate(180deg);
+    }
+  }
+  @keyframes rotate-90-cw {
+    0% {
+      -webkit-transform: rotate(0);
+              transform: rotate(0);
+    }
+    100% {
+      -webkit-transform: rotate(180deg);
+              transform: rotate(180deg);
+    }
+  }
+  
+
   .tag {
     display:block;
     font-family: 'Raleway', sans-serif;
@@ -264,8 +291,10 @@
 
   .Chat-header{
   background-color: #382c29;
-  background: url(stone.png) no-repeat center center fixed;  height: 100vh;
-
+  background: url(stone.png) no-repeat center center fixed;  
+  height: 100vh;
+  width: 100%;
+  min-width:350px;
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;
@@ -274,14 +303,34 @@
   color: white;
   }
 
+.tooltip{
+  -webkit-filter: brightness(100%);
+	-moz-filter: brightness(100%);
+	-o-filter: brightness(100%);
+	-ms-filter: brightness(100%);
+	filter: brightness(100%);
+  transition: all 1s;
 
+}
 .tooltip-text {
+    color:white;
+    font-size: 16px;
+
+  
     opacity:0;
     transition: all 0.5s;
+   
+}
+.tooltip:hover {
+  filter:brightness(50%);
+
+  filter:saturate(0);
 }
 .tooltip:hover .tooltip-text{
+ 
   opacity: 1;
 }
+
 
 .message-view {
   display: flex;
@@ -292,7 +341,7 @@
   
   left:calc(120px + 1%);
   bottom: 10%;
-
+  min-width: 320px;
   width : calc(98% - 120px);
   height: 80vh;
   overflow-y:auto;

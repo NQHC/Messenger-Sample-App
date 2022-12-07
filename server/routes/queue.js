@@ -37,7 +37,7 @@ router.post("/", async (req, res) => {
   
       }
       else{
-        console.log("In Queue" + queue);
+        //console.log("In Queue" + queue);
         update = {'current' : false};
         Tag.updateMany({tagstr: {$in : queue.tags }},update,function(error,result){
           if (error){

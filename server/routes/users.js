@@ -104,6 +104,7 @@ router.post("/login", async (req, res) => {
   )
 });
 
+//Does not delete connected chats, use with caution
 router.delete("/del", async (req, res) => {
   const { id } = req.body;
   await (User.findById(id))

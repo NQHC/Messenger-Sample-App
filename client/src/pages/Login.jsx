@@ -69,7 +69,7 @@ function Login() {
                 setError(err.response.data.msg);
                 //console.log(Error);
             });
-        
+
     }
     const checkLogin = () => {
         const body = { email, password }
@@ -80,7 +80,7 @@ function Login() {
             })
             .catch((err) => {
                 setError(err.response.data.msg);
-            //   /  console.log(Error);
+                //   /  console.log(Error);
             });
     }
     if (logMode === "login") {

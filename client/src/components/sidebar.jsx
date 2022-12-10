@@ -43,12 +43,12 @@ export default function SideBar({goChat}){
         }
         return config;
       }
-    function timeout(delay) {
+    function timeout(delay) { // del for animation
         return new Promise( res => setTimeout(res, delay) );
     }
     const checkChat = async(a) => {
         if (a){
-        console.log("delay")
+    //    console.log("delay")
         await timeout(3000);
         }
         if(ren.current !== false){
@@ -65,7 +65,7 @@ export default function SideBar({goChat}){
             }
             })
         .catch(function (error) {
-        console.log(error);
+      //  console.log(error);
      });
     }
     }

@@ -1,7 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import './App.css';
 import './Styles.css';
-import io  from "socket.io-client";
 import '../components/sidebar.jsx';
 import '../components/chatbar.jsx';
 import '../components/chatmessage.jsx';
@@ -19,12 +17,10 @@ import '../configuration/index';
 import Message from '../components/chatmessage.jsx';
 
 
-const room = "socket.id";
 
 function Chat() {
   const navigate = useNavigate();
   const[message,setMessage] = useState("");
-  const[response,setResponse] = useState("");
   const[chatId,setChat] = useState(user.activechat);
   const[totalM, settotalM] = useState(0);
   const [viewedMessages,setviewedMessages] = useState([]);
@@ -49,16 +45,13 @@ function Chat() {
     user.socket.emit("in_room",chatId);
     checkMessages();
     user.socket.off('updated_messages').on("updated_messages", () => {
-   //   console.log("RECEIVED A MESSAGE UPDATE REQUEST: " + chatId);
       checkMessages();
     });
   },[chatId]);
 
   useEffect(() => {
     checkMessages();
-  //  console.log("This is me firing");
     user.socket.off('updated_messages').on("updated_messages", () => {
-   //   console.log("RECEIVED A MESSAGE UPDATE REQUEST: " + chatId);
       checkMessages();
     });
   },[]);
@@ -105,7 +98,6 @@ const sendMessage = event => {
   };
  
 const checkMessages = async(total) =>{
- // console.log("CHECKING: " + chatId);
   await timeout(10);
   axios.get(`http://localhost:8080/chat/`, Config({total, chatId }))
   .then((res) => {

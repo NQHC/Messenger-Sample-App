@@ -4,7 +4,7 @@
   min-height:600px;
   width: 100vw;
   min-width:650px;
-  background: url(hillback.png) no-repeat center center fixed;  height: 100vh;
+  background: url(../components/images/hillback.png) no-repeat center center fixed;  height: 100vh;
 
   -webkit-background-size: cover;
   -moz-background-size: cover;
@@ -22,7 +22,7 @@
   
   }
   .PageN{
-    background: url(hillbacknight.svg) no-repeat center center fixed;  height: 100vh;
+    background: url(../components/images/hillbacknight.svg) no-repeat center center fixed;  height: 100vh;
     min-height:600px;
     width: 100vw;
     min-width:650px;
@@ -291,7 +291,7 @@
 
   .Chat-header{
   background-color: #382c29;
-  background: url(stone.png) no-repeat center center fixed;  
+  background: url(../components/images/stone.png) no-repeat center center fixed;  
   height: 100vh;
   width: 100%;
   min-width:350px;

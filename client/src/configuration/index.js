@@ -1,7 +1,7 @@
 
   import io  from "socket.io-client";
 
-  // User settings for account
+  // Global User settings for account 
   var id = "";
   var email;
   var chats = [];

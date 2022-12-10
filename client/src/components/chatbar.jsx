@@ -37,11 +37,11 @@ export default function ChatBar ({id}){
             setDisplayName(res.data.display);
         })
         .catch(function (error) {
-        console.log(error);
+     //   console.log(error);
      });
     }
     useEffect(() => {
-        console.log("checking");
+      //  checking
         checkDisplay();
       },[id]);
       
@@ -56,8 +56,8 @@ export default function ChatBar ({id}){
             }
         })
         .catch((err)=>{
-          console.log("Error:")
-            console.log(err.response.data.msg);
+       //   console.log("Error:")
+         //   console.log(err.response.data.msg);
         });
        
       };

@@ -43,8 +43,8 @@ export default function Message({FullMessage}){
   
     })
     .catch((err)=>{
-      console.log("Error:")
-        console.log(err.response.data.msg);
+     // console.log("Error:")
+       // console.log(err.response.data.msg);
     });
    
   };
@@ -58,7 +58,7 @@ export default function Message({FullMessage}){
    
     })
     .catch((err)=>{
-        console.log(err.response.data.msg);
+    //    console.log(err.response.data.msg);
     });
    
   };

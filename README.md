@@ -6,3 +6,4 @@ if env file is downloaded make sure it is '.env',
 Simple Web Messaging Application between two users
 Create an account and join a randomized queue to be connected.
 Stack : React, Express Node.JS, MongoDB
+Mainly made to test some connection techniques 

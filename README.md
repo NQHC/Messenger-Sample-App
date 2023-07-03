@@ -1,4 +1,4 @@
-# React-Node-Msngr--SWENG-465
+# Msngr App
 Chat Web App
 Can run out of the box with after installing modules,
 Will require a .env file for server, 
